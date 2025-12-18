@@ -129,7 +129,7 @@
 <script>
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
 
-    // Daftar Ranking
+    // Daftar Ranking Eksklusif (1-10)
     const daftarRankingEksklusif = {
         "RISA FADILA": 1,
         "AYYISY MAULIDA ISNAENI": 2,
@@ -143,11 +143,8 @@
         "M PARHAN MAULANA": 10
     };
 
-    // Daftar Catatan Wali Kelas
+    // Daftar Catatan Wali Kelas (Update Evaluasi Peringkat 11+)
     const daftarCatatanWali = {
-        // Daftar Catatan Wali Kelas (Update: Peringkat 11+ menggunakan kalimat evaluasi)
-    const daftarCatatanWali = {
-        // PERINGKAT 1-10 (Tetap mencantumkan peringkat)
         "RISA FADILA": "Selamat atas pencapaian luar biasa sebagai peringkat 1 di kelas. Pertahankan terus semangat belajarmu!",
         "AYYISY MAULIDA ISNAENI": "Prestasi yang membanggakan sebagai peringkat 2. Meskipun sempat terkendala kesehatan (5 hari sakit), kamu tetap mampu meraih hasil maksimal.",
         "ILFAH SADIATUL UMAH": "Hasil belajar yang sangat baik sebagai Peringkat 3. Pertahankan prestasimu dan teruslah aktif dalam kegiatan sekolah.",
@@ -158,8 +155,6 @@
         "PAKHRI KIRMAN": "Prestasi yang cukup baik di peringkat 8, namun tolong kurangi ketidakhadiran agar tidak mengganggu proses belajarmu.",
         "WENDI": "Selamat masuk dalam 10 besar sebagai Peringkat 9. Kurangi izin yang tidak terlalu mendesak agar materi pelajaran tidak tertinggal.",
         "M PARHAN MAULANA": "Kamu memiliki potensi besar sebagai Peringkat 10. Tingkatkan kedisiplinan dalam kehadiran agar hasil belajar lebih maksimal lagi.",
-
-        // PERINGKAT 11 KE ATAS (Fokus pada evaluasi diri & motivasi tanpa menyebutkan nomor peringkat)
         "RIKZA DZILFIKRI": "Hasil belajar sudah cukup baik. Mari tingkatkan lagi motivasi belajarmu agar dapat mencapai hasil yang lebih optimal di semester depan.",
         "M H RISKI": "Capaian belajarmu cukup stabil. Jangan ragu untuk lebih aktif berdiskusi di kelas guna memperdalam pemahaman materi di semester mendatang.",
         "FAIZ KURNIAWAN": "Nilai akademis sudah memenuhi standar. Terus asah kemampuan praktik di bidang DKV dan tetap konsisten dalam mengerjakan tugas.",
@@ -199,20 +194,16 @@
         const nameKey = d['NAMA SISWA'].trim().toUpperCase();
         document.getElementById('certificateArea').classList.remove('hidden');
         
-        // Tampilkan Identitas
         document.getElementById('displayNama').innerText = d['NAMA SISWA'];
         document.getElementById('displayNISN').innerText = d['NISN'] || '-';
         document.getElementById('displayNIS').innerText = d['NIS'] || '-';
         
-        // Data Kehadiran
         document.getElementById('val-S').innerText = d['Sakit'] || 0;
         document.getElementById('val-I').innerText = d['Izin'] || 0;
         document.getElementById('val-A').innerText = d['Alpa'] || 0;
 
-        // Tampilkan Catatan Wali Kelas sesuai Nama
-        document.getElementById('displayCatatan').innerText = daftarCatatanWali[nameKey] || "Tetap semangat belajar dan tingkatkan prestasimu!";
+        document.getElementById('displayCatatan').innerText = daftarCatatanWali[nameKey] || "Tetap semangat belajar dan tingkatkan terus prestasimu!";
 
-        // Tampilkan Tabel Nilai
         const gA = [
             ['Pend. Agama & BP', d['Pendidikan Agama Islam dan Budi Pekerti']],
             ['Pendidikan Pancasila', d['Pendidikan Pancasila']],
@@ -234,7 +225,6 @@
         renderTable('groupA', gA);
         renderTable('groupB', gB);
 
-        // --- LOGIKA RANGKING ---
         const badge = document.getElementById('rankBadge');
         if (rank) {
             badge.classList.remove('hidden');
@@ -243,7 +233,6 @@
             badge.classList.add('hidden');
         }
 
-        // QR Code & Scroll
         document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}`;
         window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
     }

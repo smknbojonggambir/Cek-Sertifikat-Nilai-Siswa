@@ -103,7 +103,7 @@
             </div>
 
             <div class="relative z-10 text-center mb-6">
-                <h3 class="text-xl font-serif font-bold text-slate-800 underline decoration-yellow-500 decoration-2">SURAT KETERANGAN HASIL BELAJAR</h3>
+                <h3 class="text-xl font-serif font-bold text-slate-800 underline decoration-yellow-500 decoration-2">SERTIFIKAT KETERANGAN HASIL BELAJAR</h3>
                 <p class="text-[10px] font-bold text-blue-800 tracking-widest uppercase mt-1">Semester Ganjil | Tahun Ajaran 2025/2026</p>
             </div>
 
@@ -260,14 +260,12 @@
             document.getElementById('val-I').innerText = i;
             document.getElementById('val-A').innerText = a;
 
-            // Logika Pesan Kehadiran
             let pesanHadir = "";
             if (a === 0 && s === 0 && i === 0) pesanHadir = "Kehadiran Sempurna! Pertahankan.";
             else if (a > 2) pesanHadir = "Perlu Perbaikan Kedisiplinan.";
             else pesanHadir = "Tingkatkan Kerajinan Belajar.";
             document.getElementById('pesanKehadiran').innerText = pesanHadir;
 
-            // Logika Catatan Wali Kelas yang Dinamis
             let catatan = `Ananda ${d['NAMA SISWA']} menunjukkan minat yang baik pada bidang Desain Komunikasi Visual. `;
             if (rank <= 5) catatan += `Prestasi luar biasa, pertahankan posisi peringkatmu! `;
             else if (d.avg >= 80) catatan += `Hasil belajar sudah sangat baik, teruslah berkarya. `;

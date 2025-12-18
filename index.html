@@ -9,14 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1e3a8a; --gold: #b45309; }
-        body { font-family: 'Montserrat', sans-serif; background: #f8fafc; }
+        body { font-family: 'Montserrat', sans-serif; background: #f1f5f9; }
         .font-header { font-family: 'Cinzel Decorative', cursive; }
         .font-serif { font-family: 'Playfair Display', serif; }
         
-        /* PERBAIKAN KHUSUS CETAK */
         @page { 
             size: A4 portrait; 
-            margin: 0; /* Menghilangkan header/footer otomatis browser */
+            margin: 0; 
         }
 
         @media print {
@@ -25,43 +24,46 @@
             #certificateArea { 
                 width: 210mm; 
                 height: 296mm; 
-                padding: 10mm; 
+                padding: 12mm; 
                 margin: 0 auto;
                 display: block !important;
             }
             .cert-bg { 
                 height: 100%;
-                border: 12px double var(--primary) !important; 
+                border: 10px double var(--primary) !important; 
                 padding: 10mm !important;
-                box-shadow: none !important;
                 -webkit-print-color-adjust: exact;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
             }
-            .watermark { opacity: 0.05 !important; }
+            .qr-code-img {
+                display: block !important;
+                opacity: 1 !important;
+            }
         }
 
         .cert-bg {
             background: #ffffff;
             border: 12px double var(--primary);
             position: relative;
-            background-image: linear-gradient(rgba(255,255,255,0.92), rgba(255,255,255,0.92)), url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
+            background-image: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
         }
 
-        .sig-wrapper {
-            position: relative;
-            height: 90px;
+        /* PERBAIKAN AREA QR CODE */
+        .qr-wrapper {
+            height: 120px; /* Ruang khusus agar tidak menabrak teks */
             display: flex;
             justify-content: center;
             align-items: center;
+            margin: 5px 0;
         }
 
-        .signature-img {
-            max-height: 100px;
+        .qr-code-img {
+            max-height: 110px;
             width: auto;
-            mix-blend-mode: multiply;
-            z-index: 10;
+            object-fit: contain;
+            /* Menghilangkan background putih jika ada */
+            mix-blend-mode: multiply; 
         }
 
         .watermark {
@@ -69,116 +71,114 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
             font-size: 8rem;
-            color: rgba(30, 58, 138, 0.03);
+            color: rgba(30, 58, 138, 0.04);
             pointer-events: none;
             z-index: 0;
-            user-select: none;
         }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <div class="no-print bg-slate-900 text-white py-10 px-4 text-center mb-8">
-        <h1 class="text-3xl font-header mb-2 text-yellow-500">CETAK HASIL BELAJAR</h1>
-        <p class="text-slate-400 tracking-widest text-xs font-bold uppercase">X DKV 1 - SMK NEGERI BOJONGGAMBIR</p>
-        <div class="max-w-xl mx-auto mt-8 flex flex-col md:flex-row gap-2">
-            <input type="text" id="studentName" placeholder="NAMA LENGKAP SISWA..." class="flex-1 p-3 border-2 border-slate-700 bg-slate-800 rounded-lg outline-none uppercase font-bold text-white focus:border-yellow-500">
-            <button onclick="processData()" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 px-8 rounded-lg transition-all">TAMPILKAN</button>
+    <div class="no-print bg-slate-900 p-8 text-center text-white mb-10 shadow-xl">
+        <h1 class="text-2xl font-header text-yellow-500 mb-4">SISTEM CETAK HASIL BELAJAR</h1>
+        <div class="max-w-md mx-auto flex gap-2">
+            <input type="text" id="studentName" placeholder="NAMA LENGKAP..." class="flex-1 p-3 rounded bg-slate-800 border border-slate-700 uppercase font-bold text-sm outline-none focus:border-yellow-500">
+            <button onclick="processData()" class="bg-yellow-600 px-6 py-3 rounded font-bold hover:bg-yellow-500 transition-all text-sm">TAMPILKAN</button>
         </div>
     </div>
 
-    <div id="certificateArea" class="hidden max-w-[210mm] mx-auto mb-20">
-        <div class="cert-bg p-12 shadow-2xl relative overflow-hidden bg-white min-h-[280mm]">
+    <div id="certificateArea" class="hidden max-w-[210mm] mx-auto bg-white mb-20 shadow-2xl">
+        <div class="cert-bg p-12 min-h-[280mm]">
             <div class="watermark font-header">DKV ONE</div>
             
             <div class="relative z-10 flex flex-col items-center border-b-4 border-double border-blue-900 pb-4 mb-6 text-center">
-                <img src="https://via.placeholder.com/80?text=SMK" alt="Logo" class="w-16 h-16 mb-2">
                 <h2 class="text-2xl font-header text-blue-900 leading-tight">SURAT KETERANGAN HASIL BELAJAR</h2>
                 <p class="text-md font-serif text-slate-700 italic">SMK Negeri Bojonggambir</p>
-                <p class="text-[10px] font-bold text-blue-800 mt-1 tracking-widest uppercase">Tahun Ajaran 2025/2026</p>
+                <p class="text-[10px] font-bold text-blue-800 mt-1 tracking-widest uppercase">Semester Ganjil | Tahun Ajaran 2025/2026</p>
             </div>
 
-            <div class="relative z-10 flex justify-between items-end mb-6">
-                <div class="space-y-1">
-                    <p class="text-[9px] font-bold text-blue-800 uppercase tracking-widest">Data Peserta Didik:</p>
-                    <h3 id="displayNama" class="text-2xl font-serif font-bold text-slate-800 border-b-2 border-yellow-500 pb-1 inline-block uppercase"></h3>
-                    <div class="flex gap-4 text-[10px] text-slate-600 font-medium">
-                        <p>NISN: <span id="displayNISN" class="text-slate-900"></span></p>
-                        <p>NIS: <span id="displayNIS" class="text-slate-900"></span></p>
-                    </div>
+            <div class="relative z-10 flex justify-between items-end mb-8">
+                <div>
+                    <p class="text-[9px] font-bold text-blue-800 uppercase mb-1">Diberikan Kepada:</p>
+                    <h3 id="displayNama" class="text-2xl font-serif font-bold text-slate-800 border-b-2 border-yellow-500 pb-1 uppercase"></h3>
+                    <p class="text-[10px] text-slate-500 mt-2 font-medium uppercase">NISN: <span id="displayNISN" class="text-slate-900"></span> | NIS: <span id="displayNIS" class="text-slate-900"></span></p>
                 </div>
-                <div id="rankBadge" class="hidden bg-yellow-500 text-white px-4 py-2 rounded-lg shadow-md text-center">
+                <div id="rankBadge" class="hidden bg-yellow-500 text-white px-5 py-2 rounded-lg text-center shadow-lg">
                     <p class="text-[8px] uppercase font-bold">Peringkat</p>
                     <p id="displayRank" class="text-2xl font-header"></p>
                 </div>
             </div>
 
-            <div class="relative z-10 grid grid-cols-2 gap-x-8 gap-y-6 mb-6">
+            <div class="relative z-10 grid grid-cols-2 gap-x-10 gap-y-6 mb-8">
                 <div>
-                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-2 tracking-wider">Kelompok Umum</h4>
+                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-3">Kelompok Umum</h4>
                     <table class="w-full text-[10.5px]">
                         <tbody id="groupA" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
                 <div>
-                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-2 tracking-wider">Kelompok Kejuruan</h4>
+                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-3">Kelompok Kejuruan</h4>
                     <table class="w-full text-[10.5px]">
                         <tbody id="groupB" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="relative z-10 grid grid-cols-3 gap-4 mb-6">
-                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <h4 class="text-[8px] font-bold text-slate-500 uppercase mb-2 text-center">Ketidakhadiran</h4>
-                    <div class="flex justify-around text-center">
-                        <div><p class="text-[9px] text-slate-400">S</p><p id="val-S" class="font-bold text-blue-700 text-xs"></p></div>
-                        <div><p class="text-[9px] text-slate-400">I</p><p id="val-I" class="font-bold text-blue-700 text-xs"></p></div>
-                        <div><p class="text-[9px] text-slate-400">A</p><p id="val-A" class="font-bold text-red-600 text-xs"></p></div>
+            <div class="relative z-10 grid grid-cols-3 gap-6 mb-8">
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                    <h4 class="text-[8px] font-bold text-slate-500 uppercase mb-3">Ketidakhadiran</h4>
+                    <div class="flex justify-around text-xs font-bold">
+                        <div><p class="text-[8px] text-slate-400 uppercase font-normal">S</p><span id="val-S" class="text-blue-700"></span></div>
+                        <div><p class="text-[8px] text-slate-400 uppercase font-normal">I</p><span id="val-I" class="text-blue-700"></span></div>
+                        <div><p class="text-[8px] text-slate-400 uppercase font-normal">A</p><span id="val-A" class="text-red-600"></span></div>
                     </div>
                 </div>
-                <div class="col-span-2 bg-blue-50/50 p-3 rounded-lg border border-blue-100">
-                    <h4 class="text-[8px] font-bold text-blue-800 uppercase mb-1">Catatan Wali Kelas</h4>
+                <div class="col-span-2 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                    <h4 class="text-[8px] font-bold text-blue-800 uppercase mb-2">Catatan Wali Kelas:</h4>
                     <p id="displayCatatan" class="text-[10px] text-blue-950 italic leading-snug"></p>
                 </div>
             </div>
 
-            <div class="relative z-10 flex justify-between items-start text-center mt-auto pb-4">
+            <div class="relative z-10 flex justify-between items-start text-center mt-auto pt-10">
                 <div class="w-1/3">
-                    <p class="text-[11px] text-slate-600 mb-20">Orang Tua/Wali,</p>
+                    <p class="text-[11px] text-slate-600 mb-24">Orang Tua/Wali,</p>
                     <p class="font-bold border-t border-slate-300 pt-1 text-slate-800 text-[11px]">( ____________________ )</p>
                 </div>
 
                 <div class="w-2/5">
-                    <p class="text-[10px] text-slate-600 mb-0.5">Bojonggambir, 22 Desember 2025</p>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-800">Wali Kelas X DKV 1,</p>
+                    <p class="text-[10px] text-slate-600 mb-1">Bojonggambir, 22 Desember 2025</p>
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-800">Wali Kelas X DKV 1,</p>
                     
-                    <div class="sig-wrapper">
-                        <img src="https://drive.google.com/uc?id=1KYrIF7Do28P29A5gzVNjwH-zaIqKekZI" alt="TTD" class="signature-img">
+                    <div class="qr-wrapper">
+                        <img src="https://drive.google.com/uc?id=1KYrIF7Do28P29A5gzVNjwH-zaIqKekZI" 
+                             alt="QR-Verification" 
+                             class="qr-code-img"
+                             onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFIED-RULI-LESMANA'">
                     </div>
 
-                    <div class="mt-1">
-                        <p class="font-bold underline text-blue-950 text-sm font-serif">Ruli Lesmana, S.T. Gr.</p>
+                    <div class="mt-2">
+                        <p class="font-bold underline text-blue-950 text-[13px] font-serif">Ruli Lesmana, S.T. Gr.</p>
                         <p class="text-[9px] text-slate-500 font-medium">NIP. 19850412 201012 1 002</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex justify-center gap-4 mt-8 no-print pb-10">
-            <button onclick="window.print()" class="bg-blue-800 text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-blue-900 flex items-center gap-2">
+        <div class="no-print flex justify-center gap-4 py-10">
+            <button onclick="window.print()" class="bg-blue-800 text-white px-10 py-4 rounded-full font-bold shadow-lg hover:bg-blue-900 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                CETAK SEKARANG (A4)
+                CETAK SERTIFIKAT
             </button>
         </div>
     </div>
 
     <script>
+        // Gunakan URL CSV Anda
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
 
         async function processData() {
             const inputName = document.getElementById('studentName').value.trim().toUpperCase();
-            if (!inputName) return alert('Masukkan nama lengkap!');
+            if (!inputName) return alert('Masukkan Nama!');
 
             Papa.parse(sheetUrl, {
                 download: true,
@@ -186,7 +186,6 @@
                 complete: function(results) {
                     const data = results.data.filter(row => row['NAMA SISWA']);
                     
-                    // Hitung Rata-rata & Ranking
                     const listSiswa = data.map(row => {
                         const mapels = ['Pendidikan Agama Islam dan Budi Pekerti', 'Pendidikan Pancasila', 'Bahasa Indonesia', 'Sejarah', 'Pendidikan Jasmani, Olahraga, dan Kesehatan', 'Bimbingan dan Konseling/Konselor (BP/BK)', 'Seni Rupa', 'Bahasa Inggris', 'Matematika (Umum)', 'Projek IPAS', 'Informatika', 'Dasar Dasar Desain Komunikasi Visual', 'Koding dan Kecerdasan Artifisial', 'Muatan Lokal Bahasa Daerah'];
                         let total = 0, count = 0;
@@ -234,8 +233,8 @@
                 ['Dasar-Dasar DKV', d['Dasar Dasar Desain Komunikasi Visual']],
                 ['Koding & AI', d['Koding dan Kecerdasan Artifisial']],
                 ['Bahasa Daerah', d['Muatan Lokal Bahasa Daerah']],
-                ['Pramuka', d['Ekstrakurikuler Pramuka']],
-                ['Paskibra', d['Ekstrakurikuler Paskibra']]
+                ['Pramuka', d['Ekstrakurikuler Pramuka'] || '-'],
+                ['Paskibra', d['Ekstrakurikuler Paskibra'] || '-']
             ];
 
             renderTable('groupA', gA);
@@ -245,11 +244,8 @@
             document.getElementById('val-I').innerText = d['Izin'] || 0;
             document.getElementById('val-A').innerText = d['Alpa'] || 0;
 
-            let msg = `Ananda ${d['NAMA SISWA']} menunjukkan kompetensi yang baik pada mata pelajaran produktif DKV. `;
-            if(parseInt(d['Alpa']) > 3) msg += `Mohon tingkatkan kedisiplinan kehadiran di semester depan. `;
-            else msg += `Pertahankan prestasi dan semangat belajarmu!`;
+            document.getElementById('displayCatatan').innerText = `"Ananda ${d['NAMA SISWA']} menunjukkan perkembangan yang sangat baik di kelas X DKV 1. Pertahankan semangat belajarmu!"`;
             
-            document.getElementById('displayCatatan').innerText = `"${msg}"`;
             window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
         }
 

@@ -145,28 +145,33 @@
 
     // Daftar Catatan Wali Kelas
     const daftarCatatanWali = {
-        "AI FITRI NURAENI": "Pencapaian yang bagus masuk dalam 5 besar (Peringkat 5). Tetap fokus belajar untuk meningkatkan prestasi di semester berikutnya.",
-        "ANWAR MUTAQIN": "Semangat belajar perlu ditingkatkan lagi (Peringkat 16). Kurangi absensi agar tidak tertinggal materi pelajaran yang penting.",
+        // Daftar Catatan Wali Kelas (Update: Peringkat 11+ menggunakan kalimat evaluasi)
+    const daftarCatatanWali = {
+        // PERINGKAT 1-10 (Tetap mencantumkan peringkat)
+        "RISA FADILA": "Selamat atas pencapaian luar biasa sebagai peringkat 1 di kelas. Pertahankan terus semangat belajarmu!",
         "AYYISY MAULIDA ISNAENI": "Prestasi yang membanggakan sebagai peringkat 2. Meskipun sempat terkendala kesehatan (5 hari sakit), kamu tetap mampu meraih hasil maksimal.",
-        "DEDE NURUL ALAMSAH": "Hasil belajar cukup baik (Peringkat 15). Fokuslah pada peningkatan kompetensi kejuruan di semester mendatang.",
-        "FAHMI KURNIANSYAH": "Pertahankan nilai yang sudah baik (Peringkat 14) dan usahakan untuk lebih teliti dalam pengerjaan tugas-tugas sekolah.",
-        "FAIZ KURNIAWAN": "Nilai akademis sudah memenuhi standar (Peringkat 13). Terus asah kemampuan praktik di bidang DKV agar semakin mahir.",
-        "FITRAH RIZKI RAMADON": "Nilai akademis cukup baik (Peringkat 18), namun angka ketidakhadiran tanpa keterangan (8 hari Alpa) sangat disayangkan. Perbaiki kehadiranmu.",
         "ILFAH SADIATUL UMAH": "Hasil belajar yang sangat baik sebagai Peringkat 3. Pertahankan prestasimu dan teruslah aktif dalam kegiatan sekolah.",
         "KARIN NURA'ENI": "Selamat atas peringkat 4 yang diraih. Kedisiplinanmu dalam belajar dan kehadiran sangat baik, pertahankan di semester depan.",
-        "LUTVI ABDUL JABAR": "Nilai pengetahuan cukup bagus (Peringkat 17), namun perlu ditingkatkan kedisiplinan dalam kehadiran sekolah.",
-        "M H RISKI": "Capaian yang cukup stabil (Peringkat 12). Jangan ragu untuk lebih aktif berdiskusi di kelas guna memperdalam pemahaman materi.",
-        "M PARHAN MAULANA": "Kamu memiliki potensi besar sebagai Peringkat 10. Tingkatkan kedisiplinan dalam kehadiran agar hasil belajar lebih maksimal lagi.",
-        "PAKHRI KIRMAN": "Prestasi yang cukup baik di peringkat 8, namun tolong kurangi ketidakhadiran agar tidak mengganggu proses belajarmu.",
-        "PURNAMA MAULIDAN": "Masih banyak ruang untuk peningkatan (Peringkat 21). Tingkatkan kehadiran (7 hari Alpa) dan keaktifan di dalam kelas.",
-        "RAMA RADILA PUTRA": "Hasil belajar sangat dipengaruhi oleh kehadiran (Peringkat 22). Dengan 10 hari Alpa, banyak materi tertinggal. Mohon perbaiki kedisiplinanmu.",
-        "RANGGA ANUARI LESMANA": "Tolong tingkatkan kedisiplinan (Peringkat 20). Ketidakhadiran tanpa keterangan sebanyak 10 hari sangat menghambat potensimu.",
-        "RAYNALDY RAFTANSYAH": "Kehadiran sangat penting dalam penilaian (Peringkat 19). Angka Alpa yang mencapai 10 hari sangat berpengaruh pada hasil belajar.",
-        "RIKZA DZILFIKRI": "Hasil belajar cukup baik (Peringkat 11). Tingkatkan lagi motivasi belajarmu untuk mencapai hasil optimal di semester depan.",
-        "RISA FADILA": "Selamat atas pencapaian luar biasa sebagai peringkat 1 di kelas. Pertahankan terus semangat belajarmu!",
+        "AI FITRI NURAENI": "Pencapaian yang bagus masuk dalam 5 besar (Peringkat 5). Tetap fokus belajar untuk meningkatkan prestasi di semester berikutnya.",
         "RIZKI ABDUL ROJAK": "Hasil yang memuaskan di peringkat 6. Tingkatkan lagi frekuensi belajarmu agar bisa menembus peringkat 5 besar.",
         "SITI NAFISA": "Pertahankan semangat belajarmu. Meskipun sering terkendala kesehatan (5 hari sakit), hasil belajarmu tetap stabil di peringkat 7.",
-        "WENDI": "Selamat masuk dalam 10 besar sebagai Peringkat 9. Kurangi izin yang tidak terlalu mendesak agar materi pelajaran tidak tertinggal."
+        "PAKHRI KIRMAN": "Prestasi yang cukup baik di peringkat 8, namun tolong kurangi ketidakhadiran agar tidak mengganggu proses belajarmu.",
+        "WENDI": "Selamat masuk dalam 10 besar sebagai Peringkat 9. Kurangi izin yang tidak terlalu mendesak agar materi pelajaran tidak tertinggal.",
+        "M PARHAN MAULANA": "Kamu memiliki potensi besar sebagai Peringkat 10. Tingkatkan kedisiplinan dalam kehadiran agar hasil belajar lebih maksimal lagi.",
+
+        // PERINGKAT 11 KE ATAS (Fokus pada evaluasi diri & motivasi tanpa menyebutkan nomor peringkat)
+        "RIKZA DZILFIKRI": "Hasil belajar sudah cukup baik. Mari tingkatkan lagi motivasi belajarmu agar dapat mencapai hasil yang lebih optimal di semester depan.",
+        "M H RISKI": "Capaian belajarmu cukup stabil. Jangan ragu untuk lebih aktif berdiskusi di kelas guna memperdalam pemahaman materi di semester mendatang.",
+        "FAIZ KURNIAWAN": "Nilai akademis sudah memenuhi standar. Terus asah kemampuan praktik di bidang DKV dan tetap konsisten dalam mengerjakan tugas.",
+        "FAHMI KURNIANSYAH": "Pertahankan nilai yang sudah baik. Evaluasi kembali ketelitianmu dalam pengerjaan tugas agar hasilnya lebih memuaskan di semester depan.",
+        "DEDE NURUL ALAMSAH": "Hasil belajar sudah cukup baik. Fokuslah pada peningkatan kompetensi kejuruan dan kurangi absensi agar materi tidak tertinggal.",
+        "ANWAR MUTAQIN": "Semangat belajar perlu ditingkatkan lagi. Kurangi absensi agar tidak tertinggal materi pelajaran yang penting demi perbaikan nilai di semester depan.",
+        "LUTVI ABDUL JABAR": "Nilai pengetahuan sudah cukup bagus. Namun, perbaiki kedisiplinan kehadiran sekolah agar proses belajarmu lebih berkesinambungan.",
+        "FITRAH RIZKI RAMADON": "Nilai akademis kamu sebenarnya potensial, namun angka ketidakhadiran (Alpa) sangat disayangkan. Perbaiki kehadiranmu agar prestasi meningkat.",
+        "RAYNALDY RAFTANSYAH": "Kehadiran sangat penting dalam penilaian. Mohon evaluasi diri atas tingginya angka Alpa agar tidak menghambat progres belajarmu di masa depan.",
+        "RANGGA ANUARI LESMANA": "Tolong tingkatkan kedisiplinan. Ketidakhadiran tanpa keterangan sangat menghambat potensimu. Mari berkomitmen lebih rajin di semester depan.",
+        "PURNAMA MAULIDAN": "Masih banyak ruang untuk peningkatan. Tingkatkan kehadiran dan keaktifan di dalam kelas agar hasil belajar lebih maksimal.",
+        "RAMA RADILA PUTRA": "Hasil belajar sangat dipengaruhi oleh kehadiran. Evaluasi kembali kedisiplinanmu dan kurangi angka Alpa agar materi pelajaran tidak banyak tertinggal."
     };
 
     async function processData() {

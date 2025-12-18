@@ -6,56 +6,34 @@
     <title>E-Sertifikat | X DKV 1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1e3a8a; --gold: #926a2d; --gold-light: #d4af37; }
         body { font-family: 'Montserrat', sans-serif; background: #e2e8f0; }
         .font-header { font-family: 'Cinzel Decorative', cursive; }
         .font-serif { font-family: 'Playfair Display', serif; }
-        .font-cursive { font-family: 'Great Vibes', cursive; }
         
         @page { size: A4 portrait; margin: 0; }
 
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; padding: 0 !important; margin: 0 !important; }
-            #certificateArea { 
-                width: 210mm; height: 297mm; padding: 0; margin: 0; display: block !important;
-            }
-            .cert-bg { 
-                height: 297mm; border: none !important; padding: 15mm !important;
-                -webkit-print-color-adjust: exact;
-            }
+            #certificateArea { width: 210mm; height: 297mm; padding: 0; margin: 0; display: block !important; }
+            .cert-bg { height: 297mm; border: none !important; padding: 15mm !important; -webkit-print-color-adjust: exact; }
         }
 
-        /* Desain Frame Sertifikat */
         .cert-bg {
             background: #ffffff;
             position: relative;
             border: 20px solid transparent;
-            border-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
             box-shadow: inset 0 0 0 10px var(--primary), inset 0 0 0 13px var(--gold-light);
-            background-image: 
-                radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(255,255,255,0.95)),
-                url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(255,255,255,0.95)), url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
         }
 
-        /* Ornamen Sudut */
-        .cert-bg::before, .cert-bg::after {
-            content: "✦"; position: absolute; color: var(--gold-light); font-size: 40px; z-index: 20;
-        }
-        .cert-bg::before { top: 10px; left: 15px; }
-        .cert-bg::after { top: 10px; right: 15px; }
-
-        .qr-wrapper { height: 90px; mix-blend-mode: multiply; }
+        .qr-wrapper { height: 80px; mix-blend-mode: multiply; display: flex; justify-content: center; }
         .watermark {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
             font-size: 7rem; color: rgba(30, 58, 138, 0.03); pointer-events: none; z-index: 0;
-        }
-        
-        .name-underline {
-            width: 80%; margin: 5px auto; height: 2px;
-            background: linear-gradient(to right, transparent, var(--gold), transparent);
         }
     </style>
 </head>
@@ -63,109 +41,83 @@
 
     <div class="no-print bg-slate-900 p-8 text-center text-white mb-10 shadow-xl border-b-4 border-yellow-600">
         <h1 class="text-3xl font-header text-yellow-500 mb-2">E-SERTIFIKAT HASIL BELAJAR</h1>
-        <p class="text-slate-400 mb-6 text-sm uppercase tracking-widest">SMK Negeri Bojonggambir - Kompetensi Keahlian DKV</p>
         <div class="max-w-md mx-auto flex gap-2">
-            <input type="text" id="studentName" placeholder="NAMA LENGKAP SISWA..." class="flex-1 p-4 rounded-l bg-slate-800 border-2 border-slate-700 uppercase font-bold text-sm outline-none focus:border-yellow-500 text-white">
-            <button onclick="processData()" class="bg-yellow-600 px-8 py-4 rounded-r font-bold hover:bg-yellow-500 transition-all text-sm tracking-tighter">LIHAT SERTIFIKAT</button>
+            <input type="text" id="studentName" placeholder="NAMA LENGKAP SISWA..." class="flex-1 p-4 rounded bg-slate-800 border-2 border-slate-700 uppercase font-bold text-white outline-none focus:border-yellow-500">
+            <button onclick="processData()" class="bg-yellow-600 px-8 py-4 rounded font-bold hover:bg-yellow-500 transition-all">TAMPILKAN</button>
         </div>
     </div>
 
-    <div id="certificateArea" class="hidden max-w-[210mm] mx-auto bg-white mb-20 shadow-2xl transition-all duration-700">
+    <div id="certificateArea" class="hidden max-w-[210mm] mx-auto bg-white mb-20 shadow-2xl">
         <div class="cert-bg p-16 min-h-[295mm] flex flex-col">
-            <div class="watermark font-header uppercase">Desain Komunikasi Visual</div>
+            <div class="watermark font-header uppercase">DKV ONE</div>
             
             <div class="relative z-10 flex items-center border-b-2 border-blue-900 pb-4 mb-8">
-                <div class="w-24 h-24 flex-shrink-0 flex items-center justify-center">
-                    <img src="https://drive.google.com/thumbnail?id=1uu7rXYRuUk4_rbjiimfmz016IvWI-wKF&sz=w300" 
-                         alt="Logo SMK" class="max-w-full max-h-full object-contain">
-                </div>
-                
+                <img src="https://drive.google.com/thumbnail?id=1uu7rXYRuUk4_rbjiimfmz016IvWI-wKF&sz=w300" class="w-20 h-20 object-contain mr-4">
                 <div class="flex-1 text-center">
-                    <p class="text-xs font-bold text-blue-900 uppercase">Pemerintah Provinsi Jawa Barat</p>
-                    <p class="text-xs font-bold text-blue-900 uppercase">Dinas Pendidikan</p>
-                    <h2 class="text-2xl font-header text-blue-900 leading-tight">SMK NEGERI BOJONGGAMBIR</h2>
-                    <p class="text-[9px] text-slate-600 font-medium">Jl. Lapang Sakti No. 01, Kab. Tasikmalaya | www.smknbojonggambir.sch.id</p>
+                    <p class="text-xs font-bold text-blue-900 uppercase leading-tight">Pemerintah Provinsi Jawa Barat<br>Dinas Pendidikan</p>
+                    <h2 class="text-xl font-header text-blue-900">SMK NEGERI BOJONGGAMBIR</h2>
+                    <p class="text-[9px] text-slate-600">Jl. Lapang Sakti No. 01, Kab. Tasikmalaya | smknbojonggambir.sch.id</p>
                 </div>
-                <div class="w-24 h-24 invisible"></div>
+                <div class="w-20"></div>
             </div>
 
             <div class="relative z-10 text-center mb-8">
-                <h3 class="text-4xl font-header text-blue-950 tracking-tighter mb-1">SERTIFIKAT</h3>
-                <p class="text-sm font-bold text-yellow-700 tracking-[0.3em] uppercase mb-6">Keterangan Hasil Belajar</p>
-                
-                <p class="text-sm italic text-slate-600">Diberikan Kepada :</p>
-                <h3 id="displayNama" class="text-4xl font-serif font-bold text-blue-900 uppercase my-3 drop-shadow-sm"></h3>
-                <div class="name-underline"></div>
-                <p class="text-xs font-bold text-slate-700 mt-2">
+                <h3 class="text-4xl font-header text-blue-950 mb-1">SERTIFIKAT</h3>
+                <p class="text-xs font-bold text-yellow-700 tracking-[0.3em] uppercase mb-4">Keterangan Hasil Belajar Semester Ganjil</p>
+                <p class="text-sm italic text-slate-500">Diberikan Kepada :</p>
+                <h3 id="displayNama" class="text-3xl font-serif font-bold text-blue-900 uppercase my-2"></h3>
+                <p class="text-xs font-bold text-slate-700">
                     NISN: <span id="displayNISN" class="text-blue-800"></span> | NIS: <span id="displayNIS" class="text-blue-800"></span>
                 </p>
             </div>
 
-            <div class="relative z-10 text-center mb-8 px-10">
-                <p class="text-[11px] leading-relaxed text-slate-700">
-                    Dinyatakan telah menyelesaikan penilaian kompetensi pada <b>Semester Ganjil</b> <br>
-                    Tahun Pelajaran <b>2025/2026</b> di Kelas <b>X Desain Komunikasi Visual 1</b> <br>
-                    dengan pencapaian nilai sebagai berikut:
-                </p>
-            </div>
-
-            <div class="relative z-10 grid grid-cols-2 gap-x-12 mb-8">
+            <div class="relative z-10 grid grid-cols-2 gap-x-10 mb-6">
                 <div>
-                    <h4 class="font-bold text-blue-900 border-b border-blue-200 text-[10px] mb-2 pb-1 uppercase tracking-widest">I. Muatan Nasional & Umum</h4>
-                    <table class="w-full text-[11px]">
-                        <tbody id="groupA"></tbody>
-                    </table>
+                    <h4 class="font-bold text-blue-900 border-b border-blue-200 text-[10px] mb-2 uppercase">I. Kelompok Umum</h4>
+                    <table class="w-full text-[11px]"><tbody id="groupA"></tbody></table>
                 </div>
                 <div>
-                    <h4 class="font-bold text-blue-900 border-b border-blue-200 text-[10px] mb-2 pb-1 uppercase tracking-widest">II. Muatan Kejuruan</h4>
-                    <table class="w-full text-[11px]">
-                        <tbody id="groupB"></tbody>
-                    </table>
+                    <h4 class="font-bold text-blue-900 border-b border-blue-200 text-[10px] mb-2 uppercase">II. Kelompok Kejuruan</h4>
+                    <table class="w-full text-[11px]"><tbody id="groupB"></tbody></table>
                 </div>
             </div>
 
-            <div class="relative z-10 bg-slate-50/80 border border-slate-200 p-4 rounded-lg mb-8">
+            <div class="relative z-10 bg-slate-50 border border-slate-200 p-4 rounded-lg mb-8">
                 <div class="grid grid-cols-4 items-center">
-                    <div class="text-center border-r border-slate-200">
-                        <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Kehadiran</p>
+                    <div class="text-center border-r border-slate-200 pr-2">
+                        <p class="text-[9px] font-bold text-slate-500 uppercase mb-1">Kehadiran</p>
                         <div class="text-xs font-bold flex justify-center gap-2">
-                            <span class="text-blue-700">S:<span id="val-S"></span></span>
-                            <span class="text-blue-700">I:<span id="val-I"></span></span>
-                            <span class="text-red-600">A:<span id="val-A"></span></span>
+                            <div class="flex flex-col"><span>S</span><span id="val-S" class="text-blue-700 text-lg">0</span></div>
+                            <div class="flex flex-col"><span>I</span><span id="val-I" class="text-blue-700 text-lg">0</span></div>
+                            <div class="flex flex-col"><span>A</span><span id="val-A" class="text-red-600 text-lg">0</span></div>
                         </div>
                     </div>
                     <div class="col-span-3 pl-4">
-                        <p class="text-[9px] font-bold text-blue-800 uppercase mb-1">Catatan Akademik:</p>
+                        <p class="text-[9px] font-bold text-blue-800 uppercase mb-1">Catatan Wali Kelas:</p>
                         <p id="displayCatatan" class="text-[10px] text-slate-700 italic leading-snug"></p>
                     </div>
                 </div>
             </div>
 
             <div class="relative z-10 flex justify-between items-end mt-auto">
-                <div id="rankBadge" class="hidden text-center border-2 border-yellow-600 p-3 rounded-full w-24 h-24 flex flex-col justify-center bg-yellow-50">
-                    <p class="text-[8px] font-bold text-yellow-800 uppercase leading-none">Peringkat</p>
-                    <p id="displayRank" class="text-2xl font-header text-blue-900"></p>
+                <div id="rankBadge" class="hidden text-center border-2 border-yellow-600 p-2 rounded-full w-20 h-20 flex flex-col justify-center bg-yellow-50">
+                    <p class="text-[8px] font-bold text-yellow-800 uppercase">Rank</p>
+                    <p id="displayRank" class="text-xl font-header text-blue-900"></p>
                 </div>
-
                 <div class="w-1/2 text-center">
                     <p class="text-[10px] text-slate-700 mb-1">Bojonggambir, 22 Desember 2025</p>
                     <p class="text-[10px] font-bold uppercase text-blue-900">Wali Kelas,</p>
-                    
-                    <div class="qr-wrapper flex justify-center py-2">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-RULI-LESMANA-XDKV1" alt="QR">
+                    <div class="qr-wrapper py-2">
+                        <img id="qrImg" src="" alt="QR">
                     </div>
-
-                    <p class="font-bold underline text-blue-950 text-sm font-serif">Ruli Lesmana, S.T. Gr.</p>
+                    <p class="font-bold underline text-blue-950 text-sm">Ruli Lesmana, S.T. Gr.</p>
                     <p class="text-[9px] text-slate-500">NIP. 19850412 201012 1 002</p>
                 </div>
             </div>
         </div>
 
-        <div class="no-print flex justify-center gap-4 py-10 bg-slate-900">
-            <button onclick="window.print()" class="bg-blue-600 text-white px-12 py-4 rounded-full font-bold shadow-xl hover:bg-blue-700 flex items-center gap-2 transform hover:scale-105 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                CETAK SERTIFIKAT
-            </button>
+        <div class="no-print text-center py-10 bg-slate-900">
+            <button onclick="window.print()" class="bg-blue-600 text-white px-10 py-3 rounded-full font-bold shadow-xl hover:bg-blue-700">CETAK SERTIFIKAT</button>
         </div>
     </div>
 
@@ -181,12 +133,15 @@
                 header: true,
                 complete: function(results) {
                     const data = results.data.filter(row => row['NAMA SISWA']);
+                    
+                    // Hitung Rata-rata untuk Ranking
                     const listSiswa = data.map(row => {
-                        const mapels = ['Pendidikan Agama Islam dan Budi Pekerti', 'Pendidikan Pancasila', 'Bahasa Indonesia', 'Sejarah', 'Pendidikan Jasmani, Olahraga, dan Kesehatan', 'Bimbingan dan Konseling/Konselor (BP/BK)', 'Seni Rupa', 'Bahasa Inggris', 'Matematika (Umum)', 'Projek IPAS', 'Informatika', 'Dasar Dasar Desain Komunikasi Visual', 'Koding dan Kecerdasan Artifisial', 'Muatan Lokal Bahasa Daerah'];
                         let total = 0, count = 0;
-                        mapels.forEach(m => {
-                            let val = parseFloat(row[m]);
-                            if(!isNaN(val)) { total += val; count++; }
+                        Object.keys(row).forEach(key => {
+                            if (!['NAMA SISWA', 'NISN', 'NIS', 'Sakit', 'Izin', 'Alpa', 'Alfa', 'S', 'I', 'A'].includes(key)) {
+                                let val = parseFloat(row[key]);
+                                if(!isNaN(val)) { total += val; count++; }
+                            }
                         });
                         return { ...row, avg: count > 0 ? total/count : 0 };
                     });
@@ -195,7 +150,7 @@
                     const idx = listSiswa.findIndex(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
 
                     if (idx !== -1) displayCertificate(listSiswa[idx], idx + 1);
-                    else alert('Nama ' + inputName + ' tidak ditemukan!');
+                    else alert('Nama tidak ditemukan!');
                 }
             });
         }
@@ -205,55 +160,68 @@
             document.getElementById('displayNama').innerText = d['NAMA SISWA'];
             document.getElementById('displayNISN').innerText = d['NISN'] || '-';
             document.getElementById('displayNIS').innerText = d['NIS'] || '-';
+            
+            // Perbaikan pengambilan angka kehadiran (mendukung kolom "Sakit" atau "S")
+            const sVal = d['Sakit'] || d['S'] || 0;
+            const iVal = d['Izin'] || d['I'] || 0;
+            const aVal = d['Alpa'] || d['Alfa'] || d['A'] || 0;
 
-            const badge = document.getElementById('rankBadge');
-            if(rank <= 10) {
-                badge.classList.remove('hidden');
-                document.getElementById('displayRank').innerText = `#${rank}`;
-            } else { badge.classList.add('hidden'); }
+            document.getElementById('val-S').innerText = sVal;
+            document.getElementById('val-I').innerText = iVal;
+            document.getElementById('val-A').innerText = aVal;
 
+            // Generate Catatan Wali Kelas + Pesan Kehadiran
+            let pesanAkademik = `Ananda ${d['NAMA SISWA']} menunjukkan minat yang sangat baik. Teruslah berlatih terutama pada kompetensi desain. `;
+            
+            let pesanHadir = "";
+            if (parseInt(aVal) > 5) {
+                pesanHadir = "Namun, mohon tingkatkan kedisiplinan kehadiran di semester depan karena jumlah alpa yang cukup tinggi.";
+            } else if (parseInt(aVal) > 0) {
+                pesanHadir = "Mohon kurangi ketidakhadiran tanpa keterangan agar proses belajar lebih optimal.";
+            } else {
+                pesanHadir = "Pertahankan tingkat kehadiran yang baik ini.";
+            }
+
+            document.getElementById('displayCatatan').innerText = `"${pesanAkademik}${pesanHadir} Tetap semangat!"`;
+
+            // Grouping Nilai
             const gA = [
                 ['Pend. Agama & BP', d['Pendidikan Agama Islam dan Budi Pekerti']],
                 ['Pendidikan Pancasila', d['Pendidikan Pancasila']],
                 ['Bahasa Indonesia', d['Bahasa Indonesia']],
                 ['Sejarah', d['Sejarah']],
                 ['PJOK', d['Pendidikan Jasmani, Olahraga, dan Kesehatan']],
-                ['Bimbingan Konseling', d['Bimbingan dan Konseling/Konselor (BP/BK)']],
                 ['Seni Rupa', d['Seni Rupa']],
                 ['Bahasa Inggris', d['Bahasa Inggris']]
             ];
             const gB = [
-                ['Matematika (Umum)', d['Matematika (Umum)']],
+                ['Matematika', d['Matematika (Umum)']],
                 ['Projek IPAS', d['Projek IPAS']],
                 ['Informatika', d['Informatika']],
                 ['Dasar-Dasar DKV', d['Dasar Dasar Desain Komunikasi Visual']],
                 ['Koding & AI', d['Koding dan Kecerdasan Artifisial']],
-                ['Bahasa Daerah', d['Muatan Lokal Bahasa Daerah']],
-                ['Pramuka', d['Ekstrakurikuler Pramuka'] || '-'],
-                ['Paskibra', d['Ekstrakurikuler Paskibra'] || '-']
+                ['Bahasa Daerah', d['Muatan Lokal Bahasa Daerah']]
             ];
 
             renderTable('groupA', gA);
             renderTable('groupB', gB);
 
-            document.getElementById('val-S').innerText = d['Sakit'] || 0;
-            document.getElementById('val-I').innerText = d['Izin'] || 0;
-            document.getElementById('val-A').innerText = d['Alpa'] || 0;
+            // Rank & QR
+            const badge = document.getElementById('rankBadge');
+            if(rank <= 10) {
+                badge.classList.remove('hidden');
+                document.getElementById('displayRank').innerText = `#${rank}`;
+            } else { badge.classList.add('hidden'); }
 
-            let catatan = `Ananda ${d['NAMA SISWA']} menunjukkan minat yang sangat baik. `;
-            if (rank <= 5) catatan += `Prestasi akademik sangat membanggakan, tetaplah rendah hati dan teruslah berkarya! `;
-            else if (d.avg >= 80) catatan += `Hasil belajar sangat memuaskan, pertahankan semangat belajarmu. `;
-            else catatan += `Teruslah berlatih terutama pada kompetensi desain. `;
-            catatan += `Tetap semangat!`;
-
-            document.getElementById('displayCatatan').innerText = `"${catatan}"`;
+            document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}-XDKV1`;
+            
             window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
         }
 
         function renderTable(id, data) {
             document.getElementById(id).innerHTML = data.map(item => `
                 <tr class="border-b border-slate-100">
-                    <td class="py-1 text-slate-700">${item[0]}</td>
+                    <td class="py-1 text-slate-600 text-[10px]">${item[0]}</td>
                     <td class="py-1 text-right font-bold text-blue-900">${item[1] || '0'}</td>
                 </tr>
             `).join('');

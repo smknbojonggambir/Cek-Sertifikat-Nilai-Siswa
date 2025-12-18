@@ -43,6 +43,15 @@
             z-index: 0;
             white-space: nowrap;
         }
+
+        /* Penyesuaian gambar tanda tangan */
+        .signature-img {
+            max-height: 80px;
+            margin: -15px auto;
+            position: relative;
+            z-index: 20;
+            mix-blend-mode: multiply; /* Menghilangkan background putih jika ada */
+        }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen pb-20">
@@ -134,14 +143,15 @@
                 </div>
             </div>
 
-            <div class="relative z-10 flex justify-between mt-16 text-sm">
+            <div class="relative z-10 flex justify-between mt-12 text-sm">
                 <div class="text-center w-1/3">
                     <p class="mb-20">Orang Tua/Wali,</p>
                     <p class="font-bold border-t border-slate-400 pt-1">..........................</p>
                 </div>
-                <div class="text-center w-1/3">
+                <div class="text-center w-1/3 flex flex-col items-center">
                     <p>Bojonggambir, 22 Desember 2025</p>
-                    <p class="mb-20">Wali Kelas,</p>
+                    <p>Wali Kelas,</p>
+                    <img src="https://drive.google.com/uc?export=view&id=1KYrIF7Do28P29A5gzVNjwH-zaIqKekZI" alt="Tanda Tangan" class="signature-img">
                     <p class="font-bold underline text-blue-900 text-lg">Ruli Lesmana, S.T. Gr.</p>
                     <p class="text-xs">NIP. 19850412 201012 1 002</p>
                 </div>
@@ -244,7 +254,6 @@
             renderTable('groupA', groupA);
             renderTable('groupB', groupB);
 
-            // Ambil data Absensi & Eskul
             const alpa = parseInt(d['Alpa']) || 0;
             const sakit = parseInt(d['Sakit']) || 0;
             const izin = parseInt(d['Izin']) || 0;
@@ -255,19 +264,16 @@
             document.getElementById('val-I').innerText = izin;
             document.getElementById('val-A').innerText = alpa;
 
-            // --- LOGIKA CATATAN DINAMIS ---
             let msgAkademik = "";
             let msgAbsensi = "";
             let msgEskul = "";
             const avg = d.avg;
 
-            // 1. Pesan Akademik
             if (avg >= 90) msgAkademik = `Selamat ${d['NAMA SISWA']}! Prestasi akademikmu di Semester 1 ini luar biasa. Pertahankan kualitas karyamu.`;
             else if (avg >= 80) msgAkademik = `Hasil belajar yang sangat memuaskan. Kamu memiliki potensi besar di bidang desain.`;
             else if (avg >= 75) msgAkademik = `Progres belajarmu sudah cukup baik. Terus asah kreativitas agar hasil di semester depan lebih meningkat.`;
             else msgAkademik = `Tetap semangat dalam belajar. Tingkatkan ketekunan di kelas agar hasil belajarmu lebih maksimal.`;
 
-            // 2. Pesan Kehadiran
             if (alpa === 0 && (sakit + izin) <= 2) {
                 msgAbsensi = "Kedisiplinan kehadiranmu sangat baik, ini adalah modal utama dalam dunia kerja.";
             } else if (alpa > 0) {
@@ -276,7 +282,6 @@
                 msgAbsensi = "Pertahankan tingkat kehadiranmu dan kurangi izin jika tidak mendesak.";
             }
 
-            // 3. Pesan Ekstrakurikuler
             if (pramuka.includes("A") || paskibra.includes("A") || pramuka.includes("Sangat") || paskibra.includes("Sangat")) {
                 msgEskul = "Sangat aktif dan berprestasi di kegiatan ekstrakurikuler, hal ini sangat membantu pengembangan karaktermu.";
             } else if (pramuka !== "-" || paskibra !== "-") {
@@ -285,7 +290,6 @@
                 msgEskul = "Cobalah untuk mulai aktif dalam salah satu ekstrakurikuler di Semester 2 untuk melatih kemampuan organisasi.";
             }
 
-            // Gabungkan Catatan
             document.getElementById('displayCatatan').innerText = `"${msgAkademik} ${msgAbsensi} ${msgEskul}"`;
 
             window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });

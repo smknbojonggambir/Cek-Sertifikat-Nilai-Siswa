@@ -13,10 +13,7 @@
         .font-header { font-family: 'Cinzel Decorative', cursive; }
         .font-serif { font-family: 'Playfair Display', serif; }
         
-        @page { 
-            size: A4 portrait; 
-            margin: 0; 
-        }
+        @page { size: A4 portrait; margin: 0; }
 
         @media print {
             .no-print { display: none !important; }
@@ -45,19 +42,8 @@
             background-image: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
         }
 
-        .qr-wrapper {
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 5px 0;
-        }
-
-        .qr-code-img {
-            max-height: 90px;
-            width: auto;
-            mix-blend-mode: multiply; 
-        }
+        .qr-wrapper { height: 100px; display: flex; justify-content: center; align-items: center; margin: 5px 0; }
+        .qr-code-img { max-height: 90px; width: auto; mix-blend-mode: multiply; }
 
         .watermark {
             position: absolute;
@@ -86,7 +72,7 @@
             
             <div class="relative z-10 flex items-center border-b-4 border-double border-blue-900 pb-4 mb-6">
                 <div class="w-24 h-24 flex-shrink-0 flex items-center justify-center mr-4">
-                    <img src="https://drive.google.com/uc?export=view&id=1uu7rXYRuUk4_rbjiimfmz016IvWI-wKF" 
+                    <img src="https://drive.google.com/thumbnail?id=1uu7rXYRuUk4_rbjiimfmz016IvWI-wKF&sz=w200" 
                          alt="Logo SMK" 
                          class="max-w-full max-h-full object-contain">
                 </div>

@@ -24,21 +24,17 @@
             #certificateArea { 
                 width: 210mm; 
                 height: 296mm; 
-                padding: 12mm; 
+                padding: 10mm; 
                 margin: 0 auto;
                 display: block !important;
             }
             .cert-bg { 
                 height: 100%;
                 border: 10px double var(--primary) !important; 
-                padding: 10mm !important;
+                padding: 8mm !important;
                 -webkit-print-color-adjust: exact;
                 display: flex;
                 flex-direction: column;
-            }
-            .qr-code-img {
-                display: block !important;
-                opacity: 1 !important;
             }
         }
 
@@ -49,9 +45,8 @@
             background-image: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
         }
 
-        /* PERBAIKAN AREA QR CODE */
         .qr-wrapper {
-            height: 120px; /* Ruang khusus agar tidak menabrak teks */
+            height: 100px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -59,10 +54,8 @@
         }
 
         .qr-code-img {
-            max-height: 110px;
+            max-height: 90px;
             width: auto;
-            object-fit: contain;
-            /* Menghilangkan background putih jika ada */
             mix-blend-mode: multiply; 
         }
 
@@ -80,28 +73,49 @@
 <body class="min-h-screen">
 
     <div class="no-print bg-slate-900 p-8 text-center text-white mb-10 shadow-xl">
-        <h1 class="text-2xl font-header text-yellow-500 mb-4">SISTEM CETAK HASIL BELAJAR</h1>
+        <h1 class="text-2xl font-header text-yellow-500 mb-4">SISTEM CETAK HASIL BELAJAR X DKV 1</h1>
         <div class="max-w-md mx-auto flex gap-2">
-            <input type="text" id="studentName" placeholder="NAMA LENGKAP..." class="flex-1 p-3 rounded bg-slate-800 border border-slate-700 uppercase font-bold text-sm outline-none focus:border-yellow-500">
+            <input type="text" id="studentName" placeholder="NAMA LENGKAP SISWA..." class="flex-1 p-3 rounded bg-slate-800 border border-slate-700 uppercase font-bold text-sm outline-none focus:border-yellow-500 text-white">
             <button onclick="processData()" class="bg-yellow-600 px-6 py-3 rounded font-bold hover:bg-yellow-500 transition-all text-sm">TAMPILKAN</button>
         </div>
     </div>
 
     <div id="certificateArea" class="hidden max-w-[210mm] mx-auto bg-white mb-20 shadow-2xl">
-        <div class="cert-bg p-12 min-h-[280mm]">
+        <div class="cert-bg p-12 min-h-[285mm]">
             <div class="watermark font-header">DKV ONE</div>
             
-            <div class="relative z-10 flex flex-col items-center border-b-4 border-double border-blue-900 pb-4 mb-6 text-center">
-                <h2 class="text-2xl font-header text-blue-900 leading-tight">SURAT KETERANGAN HASIL BELAJAR</h2>
-                <p class="text-md font-serif text-slate-700 italic">SMK Negeri Bojonggambir</p>
-                <p class="text-[10px] font-bold text-blue-800 mt-1 tracking-widest uppercase">Semester Ganjil | Tahun Ajaran 2025/2026</p>
+            <div class="relative z-10 flex items-center border-b-4 border-double border-blue-900 pb-4 mb-6">
+                <div class="w-24 h-24 flex-shrink-0 flex items-center justify-center mr-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Logo_SMK_Negeri_1_Bojonggambir.png" 
+                         alt="Logo SMK" 
+                         class="max-w-full max-h-full object-contain"
+                         onerror="this.src='https://via.placeholder.com/100?text=LOGO+SMK'">
+                </div>
+                
+                <div class="flex-1 text-center">
+                    <h2 class="text-xl font-bold text-blue-900 leading-tight uppercase">Pemerintah Provinsi Jawa Barat<br>Dinas Pendidikan</h2>
+                    <h2 class="text-2xl font-header text-blue-900 leading-tight">SMK NEGERI BOJONGGAMBIR</h2>
+                    <p class="text-[10px] text-slate-700 font-medium">
+                        Jl. Lapang Sakti No. 01, Bojonggambir, Kab. Tasikmalaya, Jawa Barat 46475<br>
+                        Email: smknbojonggambir@gmail.com | Website: www.smknbojonggambir.sch.id
+                    </p>
+                </div>
+                <div class="w-24 h-24 ml-4"></div>
             </div>
 
-            <div class="relative z-10 flex justify-between items-end mb-8">
+            <div class="relative z-10 text-center mb-6">
+                <h3 class="text-xl font-serif font-bold text-slate-800 underline decoration-yellow-500 decoration-2">SURAT KETERANGAN HASIL BELAJAR</h3>
+                <p class="text-[10px] font-bold text-blue-800 tracking-widest uppercase mt-1">Semester Ganjil | Tahun Ajaran 2025/2026</p>
+            </div>
+
+            <div class="relative z-10 flex justify-between items-end mb-6">
                 <div>
-                    <p class="text-[9px] font-bold text-blue-800 uppercase mb-1">Diberikan Kepada:</p>
-                    <h3 id="displayNama" class="text-2xl font-serif font-bold text-slate-800 border-b-2 border-yellow-500 pb-1 uppercase"></h3>
-                    <p class="text-[10px] text-slate-500 mt-2 font-medium uppercase">NISN: <span id="displayNISN" class="text-slate-900"></span> | NIS: <span id="displayNIS" class="text-slate-900"></span></p>
+                    <p class="text-[9px] font-bold text-blue-800 uppercase mb-1">Identitas Peserta Didik:</p>
+                    <h3 id="displayNama" class="text-xl font-serif font-bold text-slate-800 uppercase"></h3>
+                    <p class="text-[10px] text-slate-600 font-medium uppercase mt-1">
+                        Kelas: <span class="text-blue-900 font-bold">X DKV 1</span><br>
+                        NISN: <span id="displayNISN" class="text-slate-900"></span> | NIS: <span id="displayNIS" class="text-slate-900"></span>
+                    </p>
                 </div>
                 <div id="rankBadge" class="hidden bg-yellow-500 text-white px-5 py-2 rounded-lg text-center shadow-lg">
                     <p class="text-[8px] uppercase font-bold">Peringkat</p>
@@ -109,56 +123,56 @@
                 </div>
             </div>
 
-            <div class="relative z-10 grid grid-cols-2 gap-x-10 gap-y-6 mb-8">
+            <div class="relative z-10 grid grid-cols-2 gap-x-8 gap-y-4 mb-6">
                 <div>
-                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-3">Kelompok Umum</h4>
-                    <table class="w-full text-[10.5px]">
+                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-2">I. Kelompok Umum</h4>
+                    <table class="w-full text-[10px]">
                         <tbody id="groupA" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
                 <div>
-                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-3">Kelompok Kejuruan</h4>
-                    <table class="w-full text-[10.5px]">
+                    <h4 class="font-bold text-blue-900 border-l-4 border-blue-600 pl-2 uppercase text-[9px] mb-2">II. Kelompok Kejuruan</h4>
+                    <table class="w-full text-[10px]">
                         <tbody id="groupB" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="relative z-10 grid grid-cols-3 gap-6 mb-8">
-                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
-                    <h4 class="text-[8px] font-bold text-slate-500 uppercase mb-3">Ketidakhadiran</h4>
+            <div class="relative z-10 grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 text-center">
+                    <h4 class="text-[8px] font-bold text-slate-500 uppercase mb-2">Ketidakhadiran</h4>
                     <div class="flex justify-around text-xs font-bold">
                         <div><p class="text-[8px] text-slate-400 uppercase font-normal">S</p><span id="val-S" class="text-blue-700"></span></div>
                         <div><p class="text-[8px] text-slate-400 uppercase font-normal">I</p><span id="val-I" class="text-blue-700"></span></div>
                         <div><p class="text-[8px] text-slate-400 uppercase font-normal">A</p><span id="val-A" class="text-red-600"></span></div>
                     </div>
                 </div>
-                <div class="col-span-2 bg-blue-50/50 p-4 rounded-lg border border-blue-100">
-                    <h4 class="text-[8px] font-bold text-blue-800 uppercase mb-2">Catatan Wali Kelas:</h4>
-                    <p id="displayCatatan" class="text-[10px] text-blue-950 italic leading-snug"></p>
+                <div class="col-span-2 bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+                    <h4 class="text-[8px] font-bold text-blue-800 uppercase mb-1">Catatan Wali Kelas:</h4>
+                    <p id="displayCatatan" class="text-[9px] text-blue-950 italic leading-snug"></p>
                 </div>
             </div>
 
-            <div class="relative z-10 flex justify-between items-start text-center mt-auto pt-10">
+            <div class="relative z-10 flex justify-between items-start text-center mt-auto pt-4">
                 <div class="w-1/3">
-                    <p class="text-[11px] text-slate-600 mb-24">Orang Tua/Wali,</p>
-                    <p class="font-bold border-t border-slate-300 pt-1 text-slate-800 text-[11px]">( ____________________ )</p>
+                    <p class="text-[10px] text-slate-600 mb-20">Orang Tua/Wali,</p>
+                    <p class="font-bold border-t border-slate-300 pt-1 text-slate-800 text-[10px]">( ____________________ )</p>
                 </div>
 
                 <div class="w-2/5">
-                    <p class="text-[10px] text-slate-600 mb-1">Bojonggambir, 22 Desember 2025</p>
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-800">Wali Kelas X DKV 1,</p>
+                    <p class="text-[9px] text-slate-600 mb-1">Bojonggambir, 22 Desember 2025</p>
+                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-800">Wali Kelas X DKV 1,</p>
                     
                     <div class="qr-wrapper">
                         <img src="https://drive.google.com/uc?id=1KYrIF7Do28P29A5gzVNjwH-zaIqKekZI" 
                              alt="QR-Verification" 
                              class="qr-code-img"
-                             onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFIED-RULI-LESMANA'">
+                             onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFIED-RULI-LESMANA-XDKV1'">
                     </div>
 
-                    <div class="mt-2">
-                        <p class="font-bold underline text-blue-950 text-[13px] font-serif">Ruli Lesmana, S.T. Gr.</p>
-                        <p class="text-[9px] text-slate-500 font-medium">NIP. 19850412 201012 1 002</p>
+                    <div class="mt-1">
+                        <p class="font-bold underline text-blue-950 text-[12px] font-serif">Ruli Lesmana, S.T. Gr.</p>
+                        <p class="text-[8px] text-slate-500 font-medium">NIP. 19850412 201012 1 002</p>
                     </div>
                 </div>
             </div>
@@ -167,13 +181,12 @@
         <div class="no-print flex justify-center gap-4 py-10">
             <button onclick="window.print()" class="bg-blue-800 text-white px-10 py-4 rounded-full font-bold shadow-lg hover:bg-blue-900 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                CETAK SERTIFIKAT
+                CETAK SEKARANG
             </button>
         </div>
     </div>
 
     <script>
-        // Gunakan URL CSV Anda
         const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
 
         async function processData() {
@@ -200,7 +213,7 @@
                     const idx = listSiswa.findIndex(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
 
                     if (idx !== -1) displayCertificate(listSiswa[idx], idx + 1);
-                    else alert('Nama tidak ditemukan!');
+                    else alert('Nama ' + inputName + ' tidak ditemukan dalam data X DKV 1!');
                 }
             });
         }
@@ -224,6 +237,7 @@
                 ['Sejarah', d['Sejarah']],
                 ['PJOK', d['Pendidikan Jasmani, Olahraga, dan Kesehatan']],
                 ['Bimbingan Konseling', d['Bimbingan dan Konseling/Konselor (BP/BK)']],
+                ['Seni Rupa', d['Seni Rupa']],
                 ['Bahasa Inggris', d['Bahasa Inggris']]
             ];
             const gB = [
@@ -244,7 +258,11 @@
             document.getElementById('val-I').innerText = d['Izin'] || 0;
             document.getElementById('val-A').innerText = d['Alpa'] || 0;
 
-            document.getElementById('displayCatatan').innerText = `"Ananda ${d['NAMA SISWA']} menunjukkan perkembangan yang sangat baik di kelas X DKV 1. Pertahankan semangat belajarmu!"`;
+            let catatan = `Ananda ${d['NAMA SISWA']} menunjukkan semangat belajar yang baik di kelas X DKV 1. `;
+            if(parseInt(d['Alpa']) > 0) catatan += `Mohon tingkatkan lagi kedisiplinan kehadiran. `;
+            catatan += `Pertahankan prestasimu!`;
+            
+            document.getElementById('displayCatatan').innerText = `"${catatan}"`;
             
             window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
         }
@@ -252,8 +270,8 @@
         function renderTable(id, data) {
             document.getElementById(id).innerHTML = data.map(item => `
                 <tr class="border-b border-slate-50">
-                    <td class="py-1.5 text-slate-600">${item[0]}</td>
-                    <td class="py-1.5 text-right font-bold text-blue-900">${item[1] || '0'}</td>
+                    <td class="py-1 text-slate-600">${item[0]}</td>
+                    <td class="py-1 text-right font-bold text-blue-900">${item[1] || '0'}</td>
                 </tr>
             `).join('');
         }

@@ -126,22 +126,8 @@
         </div>
     </div>
 
-  <script>
+ <script>
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
-
-    // Daftar Ranking Tetap sesuai permintaan Anda
-    const daftarRanking = {
-        "RISA FADILA": 1,
-        "AYYISY MAULIDA ISNAENI": 2,
-        "ILFAH SADIATUL UMAH": 3,
-        "KARIN NURA'ENI": 4,
-        "AI FITRI NURAENI": 5,
-        "RIZKI ABDUL ROJAK": 6,
-        "SITI NAFISA": 7,
-        "PAKHRI KIRMAN": 8,
-        "WENDI": 9,
-        "M PARHAN MAULANA": 10
-    };
 
     async function processData() {
         const inputName = document.getElementById('studentName').value.trim().toUpperCase();
@@ -151,25 +137,27 @@
             download: true,
             header: true,
             complete: function(results) {
-                const data = results.data.filter(row => row['NAMA SISWA']);
-                
-                // Cari data siswa berdasarkan nama
-                const siswa = data.find(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
+                // Mencari data berdasarkan nama (mendukung header "NAMA SISWA" atau "Nama")
+                const data = results.data.filter(row => row['NAMA SISWA'] || row['Nama']);
+                const siswa = data.find(s => {
+                    const namaDiSheet = (s['NAMA SISWA'] || s['Nama'] || "").trim().toUpperCase();
+                    return namaDiSheet === inputName;
+                });
 
                 if (siswa) {
-                    // Cek apakah nama ini ada di daftar ranking
-                    const rank = daftarRanking[inputName] || null;
-                    displayCertificate(siswa, rank);
+                    displayCertificate(siswa);
                 } else {
-                    alert('Nama tidak ditemukan di database!');
+                    alert('Nama tidak ditemukan! Pastikan ejaan sesuai dengan Google Sheet.');
                 }
             }
         });
     }
 
-    function displayCertificate(d, rank) {
+    function displayCertificate(d) {
         document.getElementById('certificateArea').classList.remove('hidden');
-        document.getElementById('displayNama').innerText = d['NAMA SISWA'];
+        
+        // Menampilkan Nama dan Identitas
+        document.getElementById('displayNama').innerText = d['NAMA SISWA'] || d['Nama'];
         document.getElementById('displayNISN').innerText = d['NISN'] || '-';
         document.getElementById('displayNIS').innerText = d['NIS'] || '-';
         
@@ -182,11 +170,9 @@
         document.getElementById('val-A').innerText = aVal;
 
         // Catatan Otomatis
-        let pesanAkademik = `Ananda ${d['NAMA SISWA']} menunjukkan minat belajar yang baik. `;
-        let pesanHadir = parseInt(aVal) > 0 ? "Tingkatkan kedisiplinan di semester depan." : "Pertahankan absensi Anda.";
-        document.getElementById('displayCatatan').innerText = `"${pesanAkademik}${pesanHadir} Tetap semangat!"`;
+        document.getElementById('displayCatatan').innerText = `"${d['KETERANGAN'] || 'Tetap semangat dalam belajar dan terus tingkatkan prestasi!'}"`;
 
-        // Pengelompokan Mata Pelajaran (Sesuaikan dengan Header Google Sheet Anda)
+        // Pengelompokan Mata Pelajaran
         const gA = [
             ['Pend. Agama & BP', d['Pendidikan Agama Islam dan Budi Pekerti']],
             ['Pendidikan Pancasila', d['Pendidikan Pancasila']],
@@ -208,16 +194,22 @@
         renderTable('groupA', gA);
         renderTable('groupB', gB);
 
-        // LOGIKA RANGKING: Tampilkan badge hanya jika ada di daftar 1-10
+        // --- LOGIKA RANGKING DINAMIS ---
+        // Mengambil angka langsung dari kolom "Rangking" di Excel Anda
+        const rankValue = d['Rangking'] || d['RANGKING'];
+        const rankInt = parseInt(rankValue);
         const badge = document.getElementById('rankBadge');
-        if (rank !== null) {
+
+        // Sesuai permintaan: Hanya muncul jika ranking 1 sampai 10
+        if (!isNaN(rankInt) && rankInt >= 1 && rankInt <= 10) {
             badge.classList.remove('hidden');
-            document.getElementById('displayRank').innerText = `#${rank}`;
+            document.getElementById('displayRank').innerText = `#${rankInt}`;
         } else {
             badge.classList.add('hidden');
         }
 
-        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}`;
+        // Generate QR Code
+        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA'] || d['Nama']}`;
         window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
     }
 

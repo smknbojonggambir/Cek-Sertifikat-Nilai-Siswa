@@ -126,8 +126,22 @@
         </div>
     </div>
 
- <script>
+<script>
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
+
+    // Perintah: Daftar Nama dan Rangking Eksklusif
+    const daftarRankingEksklusif = {
+        "RISA FADILA": 1,
+        "AYYISY MAULIDA ISNAENI": 2,
+        "ILFAH SADIATUL UMAH": 3,
+        "KARIN NURA'ENI": 4,
+        "AI FITRI NURAENI": 5,
+        "RIZKI ABDUL ROJAK": 6,
+        "SITI NAFISA": 7,
+        "PAKHRI KIRMAN": 8,
+        "WENDI": 9,
+        "M PARHAN MAULANA": 10
+    };
 
     async function processData() {
         const inputName = document.getElementById('studentName').value.trim().toUpperCase();
@@ -137,42 +151,35 @@
             download: true,
             header: true,
             complete: function(results) {
-                // Mencari data berdasarkan nama (mendukung header "NAMA SISWA" atau "Nama")
-                const data = results.data.filter(row => row['NAMA SISWA'] || row['Nama']);
-                const siswa = data.find(s => {
-                    const namaDiSheet = (s['NAMA SISWA'] || s['Nama'] || "").trim().toUpperCase();
-                    return namaDiSheet === inputName;
-                });
+                // Mencari data siswa di Google Sheet
+                const data = results.data.filter(row => row['NAMA SISWA']);
+                const siswa = data.find(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
 
                 if (siswa) {
-                    displayCertificate(siswa);
+                    // Perintah: Ambil rangking hanya jika ada di daftar 10 besar
+                    const rank = daftarRankingEksklusif[inputName] || null;
+                    displayCertificate(siswa, rank);
                 } else {
-                    alert('Nama tidak ditemukan! Pastikan ejaan sesuai dengan Google Sheet.');
+                    alert('Nama tidak ditemukan dalam database!');
                 }
             }
         });
     }
 
-    function displayCertificate(d) {
+    function displayCertificate(d, rank) {
         document.getElementById('certificateArea').classList.remove('hidden');
         
-        // Menampilkan Nama dan Identitas
-        document.getElementById('displayNama').innerText = d['NAMA SISWA'] || d['Nama'];
+        // Tampilkan Identitas
+        document.getElementById('displayNama').innerText = d['NAMA SISWA'];
         document.getElementById('displayNISN').innerText = d['NISN'] || '-';
         document.getElementById('displayNIS').innerText = d['NIS'] || '-';
         
         // Data Kehadiran
-        const sVal = d['Sakit'] || d['S'] || 0;
-        const iVal = d['Izin'] || d['I'] || 0;
-        const aVal = d['Alpa'] || d['Alfa'] || d['A'] || 0;
-        document.getElementById('val-S').innerText = sVal;
-        document.getElementById('val-I').innerText = iVal;
-        document.getElementById('val-A').innerText = aVal;
+        document.getElementById('val-S').innerText = d['Sakit'] || 0;
+        document.getElementById('val-I').innerText = d['Izin'] || 0;
+        document.getElementById('val-A').innerText = d['Alpa'] || 0;
 
-        // Catatan Otomatis
-        document.getElementById('displayCatatan').innerText = `"${d['KETERANGAN'] || 'Tetap semangat dalam belajar dan terus tingkatkan prestasi!'}"`;
-
-        // Pengelompokan Mata Pelajaran
+        // Tampilkan Tabel Nilai
         const gA = [
             ['Pend. Agama & BP', d['Pendidikan Agama Islam dan Budi Pekerti']],
             ['Pendidikan Pancasila', d['Pendidikan Pancasila']],
@@ -194,22 +201,19 @@
         renderTable('groupA', gA);
         renderTable('groupB', gB);
 
-        // --- LOGIKA RANGKING DINAMIS ---
-        // Mengambil angka langsung dari kolom "Rangking" di Excel Anda
-        const rankValue = d['Rangking'] || d['RANGKING'];
-        const rankInt = parseInt(rankValue);
+        // --- LOGIKA RANGKING ---
         const badge = document.getElementById('rankBadge');
-
-        // Sesuai permintaan: Hanya muncul jika ranking 1 sampai 10
-        if (!isNaN(rankInt) && rankInt >= 1 && rankInt <= 10) {
+        if (rank) {
+            // Jika masuk dalam 10 nama di atas, tampilkan rangking
             badge.classList.remove('hidden');
-            document.getElementById('displayRank').innerText = `#${rankInt}`;
+            document.getElementById('displayRank').innerText = `#${rank}`;
         } else {
+            // Jika tidak ada di daftar 10 orang tersebut, sembunyikan rangking
             badge.classList.add('hidden');
         }
 
-        // Generate QR Code
-        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA'] || d['Nama']}`;
+        // QR Code & Scroll
+        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}`;
         window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
     }
 

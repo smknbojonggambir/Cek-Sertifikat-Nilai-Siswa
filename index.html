@@ -126,8 +126,22 @@
         </div>
     </div>
 
-   <script>
+  <script>
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
+
+    // Daftar Ranking Tetap sesuai permintaan Anda
+    const daftarRanking = {
+        "RISA FADILA": 1,
+        "AYYISY MAULIDA ISNAENI": 2,
+        "ILFAH SADIATUL UMAH": 3,
+        "KARIN NURA'ENI": 4,
+        "AI FITRI NURAENI": 5,
+        "RIZKI ABDUL ROJAK": 6,
+        "SITI NAFISA": 7,
+        "PAKHRI KIRMAN": 8,
+        "WENDI": 9,
+        "M PARHAN MAULANA": 10
+    };
 
     async function processData() {
         const inputName = document.getElementById('studentName').value.trim().toUpperCase();
@@ -137,46 +151,17 @@
             download: true,
             header: true,
             complete: function(results) {
-                // 1. Ambil data dan simpan index asli (untuk simulasi COUNTIF baris Excel)
-                const dataRaw = results.data.filter(row => row['NAMA SISWA']);
+                const data = results.data.filter(row => row['NAMA SISWA']);
                 
-                const listSiswa = dataRaw.map((row, index) => {
-                    let total = 0, count = 0;
-                    Object.keys(row).forEach(key => {
-                        // Abaikan kolom non-nilai
-                        if (!['NAMA SISWA', 'NISN', 'NIS', 'Sakit', 'Izin', 'Alpa', 'Alfa', 'S', 'I', 'A', 'KETERANGAN', 'RANGKING'].includes(key)) {
-                            let val = parseFloat(row[key]);
-                            if(!isNaN(val)) { total += val; count++; }
-                        }
-                    });
-                    return { 
-                        ...row, 
-                        avg: count > 0 ? total/count : 0,
-                        originalIndex: index // Ini mewakili posisi baris di Excel
-                    };
-                });
+                // Cari data siswa berdasarkan nama
+                const siswa = data.find(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
 
-                // 2. Perumusan Rangking (Logika: RANK.EQ + COUNTIF - 1)
-                // Kita urutkan berdasarkan rata-rata (Besar ke Kecil)
-                // Jika nilai sama, yang originalIndex-nya lebih besar (paling bawah) jadi pemenang
-                listSiswa.sort((a, b) => {
-                    if (b.avg !== a.avg) {
-                        return b.avg - a.avg; 
-                    }
-                    return b.originalIndex - a.originalIndex; 
-                });
-
-                // 3. Cari data siswa berdasarkan input nama
-                // Menggunakan findIndex untuk mendapatkan posisi rank (index + 1)
-                const rankIdx = listSiswa.findIndex(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
-
-                if (rankIdx !== -1) {
-                    // Jika kolom "RANGKING" sudah ada di Excel, bisa langsung diambil:
-                    // let manualRank = listSiswa[rankIdx]['RANGKING'];
-                    // Namun kita gunakan hasil kalkulasi rumus tadi:
-                    displayCertificate(listSiswa[rankIdx], rankIdx + 1);
+                if (siswa) {
+                    // Cek apakah nama ini ada di daftar ranking
+                    const rank = daftarRanking[inputName] || null;
+                    displayCertificate(siswa, rank);
                 } else {
-                    alert('Nama tidak ditemukan! Pastikan ejaan benar sesuai data.');
+                    alert('Nama tidak ditemukan di database!');
                 }
             }
         });
@@ -192,17 +177,16 @@
         const sVal = d['Sakit'] || d['S'] || 0;
         const iVal = d['Izin'] || d['I'] || 0;
         const aVal = d['Alpa'] || d['Alfa'] || d['A'] || 0;
-
         document.getElementById('val-S').innerText = sVal;
         document.getElementById('val-I').innerText = iVal;
         document.getElementById('val-A').innerText = aVal;
 
         // Catatan Otomatis
         let pesanAkademik = `Ananda ${d['NAMA SISWA']} menunjukkan minat belajar yang baik. `;
-        let pesanHadir = parseInt(aVal) > 3 ? "Mohon tingkatkan kedisiplinan kehadiran." : "Pertahankan prestasi dan kehadiran Anda.";
-        document.getElementById('displayCatatan').innerText = `"${pesanAkademik}${pesanHadir} Terus berkarya!"`;
+        let pesanHadir = parseInt(aVal) > 0 ? "Tingkatkan kedisiplinan di semester depan." : "Pertahankan absensi Anda.";
+        document.getElementById('displayCatatan').innerText = `"${pesanAkademik}${pesanHadir} Tetap semangat!"`;
 
-        // Daftar Mata Pelajaran (Sesuaikan dengan header kolom Excel Anda)
+        // Pengelompokan Mata Pelajaran (Sesuaikan dengan Header Google Sheet Anda)
         const gA = [
             ['Pend. Agama & BP', d['Pendidikan Agama Islam dan Budi Pekerti']],
             ['Pendidikan Pancasila', d['Pendidikan Pancasila']],
@@ -224,17 +208,16 @@
         renderTable('groupA', gA);
         renderTable('groupB', gB);
 
-        // Menampilkan Badge Rangking (Sesuai list 1-10 di gambar Anda)
+        // LOGIKA RANGKING: Tampilkan badge hanya jika ada di daftar 1-10
         const badge = document.getElementById('rankBadge');
-        if(rank <= 10) {
+        if (rank !== null) {
             badge.classList.remove('hidden');
             document.getElementById('displayRank').innerText = `#${rank}`;
-        } else { 
-            badge.classList.add('hidden'); 
+        } else {
+            badge.classList.add('hidden');
         }
 
-        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}-RANK-${rank}`;
-        
+        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}`;
         window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
     }
 

@@ -57,7 +57,7 @@
         <div class="bg-white p-8 rounded-2xl shadow-2xl border-t-8 border-blue-600">
             <label class="block text-gray-700 font-bold mb-2">Cari Nama Siswa</label>
             <div class="flex flex-col md:flex-row gap-3">
-                <input type="text" id="studentName" placeholder="Contoh: AHMAD..." class="flex-1 p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none uppercase transition-all">
+                <input type="text" id="studentName" placeholder="Masukkan Nama Lengkap..." class="flex-1 p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:outline-none uppercase transition-all">
                 <button onclick="processData()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-transform active:scale-95">
                     Tampilkan
                 </button>
@@ -76,7 +76,7 @@
                     <h2 class="text-4xl font-header text-blue-900 tracking-tighter">SURAT KETERANGAN HASIL BELAJAR</h2>
                     <p class="text-xl font-bold text-gray-700 mt-1 uppercase tracking-widest">SMK NEGERI BOJONGGAMBIR KELAS X DKV 1</p>
                     <p class="text-md font-bold text-blue-800">SEMESTER 1 - TAHUN AJARAN 2025/2026</p>
-                    <p class="text-sm text-gray-500 font-medium">Jl. Bojonggambir Kp. Mandalawangi RT005/005 KABUPATEN TASIKMALAYA</p>
+                    <p class="text-sm text-gray-500 font-medium uppercase">KABUPATEN TASIKMALAYA</p>
                 </div>
             </div>
 
@@ -129,7 +129,7 @@
                 </div>
                 <div class="col-span-2">
                     <h4 class="font-bold text-sm text-slate-700 mb-2 uppercase border-b">Catatan Wali Kelas</h4>
-                    <div class="bg-blue-50 border border-blue-200 p-4 rounded italic text-sm text-blue-900 min-h-[80px]" id="displayCatatan">
+                    <div class="bg-blue-50 border border-blue-200 p-4 rounded italic text-sm text-blue-900 min-h-[100px] leading-relaxed" id="displayCatatan">
                     </div>
                 </div>
             </div>
@@ -173,7 +173,7 @@
                     const data = results.data.filter(row => row['NAMA SISWA']);
                     
                     const listSiswa = data.map(row => {
-                        const nilai = [
+                        const nilaiKeys = [
                             'Pendidikan Agama Islam dan Budi Pekerti', 'Pendidikan Pancasila', 'Bahasa Indonesia',
                             'Sejarah', 'Pendidikan Jasmani, Olahraga, dan Kesehatan', 'Bimbingan dan Konseling/Konselor (BP/BK)',
                             'Seni Rupa', 'Bahasa Inggris', 'Matematika (Umum)', 'Projek IPAS', 'Informatika',
@@ -182,7 +182,7 @@
                         
                         let total = 0;
                         let count = 0;
-                        nilai.forEach(mapel => {
+                        nilaiKeys.forEach(mapel => {
                             let n = parseFloat(row[mapel]);
                             if (!isNaN(n)) { total += n; count++; }
                         });
@@ -244,22 +244,49 @@
             renderTable('groupA', groupA);
             renderTable('groupB', groupB);
 
-            document.getElementById('val-S').innerText = d['Sakit'] || '0';
-            document.getElementById('val-I').innerText = d['Izin'] || '0';
+            // Ambil data Absensi & Eskul
             const alpa = parseInt(d['Alpa']) || 0;
+            const sakit = parseInt(d['Sakit']) || 0;
+            const izin = parseInt(d['Izin']) || 0;
+            const pramuka = d['Ekstrakurikuler Pramuka'] || "";
+            const paskibra = d['Ekstrakurikuler Paskibra'] || "";
+
+            document.getElementById('val-S').innerText = sakit;
+            document.getElementById('val-I').innerText = izin;
             document.getElementById('val-A').innerText = alpa;
 
-            let catatan = "";
+            // --- LOGIKA CATATAN DINAMIS ---
+            let msgAkademik = "";
+            let msgAbsensi = "";
+            let msgEskul = "";
             const avg = d.avg;
-            
-            if (avg >= 90) catatan = `Selamat ${d['NAMA SISWA']}! Prestasi akademikmu luar biasa di Semester 1 ini. Terus kembangkan bakatmu di bidang DKV dan tetaplah menjadi inspirasi bagi teman-temanmu.`;
-            else if (avg >= 80) catatan = `Hasil belajar yang sangat baik. Kamu memiliki potensi besar di bidang kejuruan. Pertahankan semangatmu di semester depan!`;
-            else if (avg >= 75) catatan = `Sudah menunjukkan progres yang baik. Terus asah kreativitas dan ketekunan dalam mengerjakan projek-projek desain.`;
-            else catatan = `Tetap semangat belajar. Perbaiki kehadiran dan fokuslah pada materi yang belum dikuasai agar Semester 2 lebih maksimal.`;
 
-            if (alpa > 2) catatan += " Mohon perhatikan kedisiplinan kehadiran demi kelancaran proses belajar.";
-            
-            document.getElementById('displayCatatan').innerText = `"${catatan}"`;
+            // 1. Pesan Akademik
+            if (avg >= 90) msgAkademik = `Selamat ${d['NAMA SISWA']}! Prestasi akademikmu di Semester 1 ini luar biasa. Pertahankan kualitas karyamu.`;
+            else if (avg >= 80) msgAkademik = `Hasil belajar yang sangat memuaskan. Kamu memiliki potensi besar di bidang desain.`;
+            else if (avg >= 75) msgAkademik = `Progres belajarmu sudah cukup baik. Terus asah kreativitas agar hasil di semester depan lebih meningkat.`;
+            else msgAkademik = `Tetap semangat dalam belajar. Tingkatkan ketekunan di kelas agar hasil belajarmu lebih maksimal.`;
+
+            // 2. Pesan Kehadiran
+            if (alpa === 0 && (sakit + izin) <= 2) {
+                msgAbsensi = "Kedisiplinan kehadiranmu sangat baik, ini adalah modal utama dalam dunia kerja.";
+            } else if (alpa > 0) {
+                msgAbsensi = `Mohon kurangi ketidakhadiran tanpa keterangan (${alpa} Alpa) karena sangat memengaruhi penilaian sikap.`;
+            } else {
+                msgAbsensi = "Pertahankan tingkat kehadiranmu dan kurangi izin jika tidak mendesak.";
+            }
+
+            // 3. Pesan Ekstrakurikuler
+            if (pramuka.includes("A") || paskibra.includes("A") || pramuka.includes("Sangat") || paskibra.includes("Sangat")) {
+                msgEskul = "Sangat aktif dan berprestasi di kegiatan ekstrakurikuler, hal ini sangat membantu pengembangan karaktermu.";
+            } else if (pramuka !== "-" || paskibra !== "-") {
+                msgEskul = "Keaktifanmu di ekstrakurikuler sudah bagus, teruskan kontribusi positifmu bagi sekolah.";
+            } else {
+                msgEskul = "Cobalah untuk mulai aktif dalam salah satu ekstrakurikuler di Semester 2 untuk melatih kemampuan organisasi.";
+            }
+
+            // Gabungkan Catatan
+            document.getElementById('displayCatatan').innerText = `"${msgAkademik} ${msgAbsensi} ${msgEskul}"`;
 
             window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
         }

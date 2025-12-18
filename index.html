@@ -86,16 +86,15 @@
             
             <div class="relative z-10 flex items-center border-b-4 border-double border-blue-900 pb-4 mb-6">
                 <div class="w-24 h-24 flex-shrink-0 flex items-center justify-center mr-4">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Logo_SMK_Negeri_1_Bojonggambir.png" 
+                    <img src="https://drive.google.com/uc?export=view&id=1uu7rXYRuUk4_rbjiimfmz016IvWI-wKF" 
                          alt="Logo SMK" 
-                         class="max-w-full max-h-full object-contain"
-                         onerror="this.src='https://via.placeholder.com/100?text=LOGO+SMK'">
+                         class="max-w-full max-h-full object-contain">
                 </div>
                 
                 <div class="flex-1 text-center">
-                    <h2 class="text-xl font-bold text-blue-900 leading-tight uppercase">Pemerintah Provinsi Jawa Barat<br>Dinas Pendidikan</h2>
+                    <h2 class="text-lg font-bold text-blue-900 leading-tight uppercase">Pemerintah Provinsi Jawa Barat<br>Dinas Pendidikan</h2>
                     <h2 class="text-2xl font-header text-blue-900 leading-tight">SMK NEGERI BOJONGGAMBIR</h2>
-                    <p class="text-[10px] text-slate-700 font-medium">
+                    <p class="text-[9px] text-slate-700 font-medium">
                         Jl. Lapang Sakti No. 01, Bojonggambir, Kab. Tasikmalaya, Jawa Barat 46475<br>
                         Email: smknbojonggambir@gmail.com | Website: www.smknbojonggambir.sch.id
                     </p>
@@ -141,11 +140,12 @@
             <div class="relative z-10 grid grid-cols-3 gap-4 mb-6">
                 <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 text-center">
                     <h4 class="text-[8px] font-bold text-slate-500 uppercase mb-2">Ketidakhadiran</h4>
-                    <div class="flex justify-around text-xs font-bold">
+                    <div class="flex justify-around text-xs font-bold mb-2">
                         <div><p class="text-[8px] text-slate-400 uppercase font-normal">S</p><span id="val-S" class="text-blue-700"></span></div>
                         <div><p class="text-[8px] text-slate-400 uppercase font-normal">I</p><span id="val-I" class="text-blue-700"></span></div>
                         <div><p class="text-[8px] text-slate-400 uppercase font-normal">A</p><span id="val-A" class="text-red-600"></span></div>
                     </div>
+                    <p id="pesanKehadiran" class="text-[7px] leading-tight font-medium uppercase text-slate-500 border-t pt-1"></p>
                 </div>
                 <div class="col-span-2 bg-blue-50/50 p-3 rounded-lg border border-blue-100">
                     <h4 class="text-[8px] font-bold text-blue-800 uppercase mb-1">Catatan Wali Kelas:</h4>
@@ -164,10 +164,9 @@
                     <p class="text-[9px] font-bold uppercase tracking-wider text-slate-800">Wali Kelas X DKV 1,</p>
                     
                     <div class="qr-wrapper">
-                        <img src="https://drive.google.com/uc?id=1KYrIF7Do28P29A5gzVNjwH-zaIqKekZI" 
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFIED-RULI-LESMANA-XDKV1" 
                              alt="QR-Verification" 
-                             class="qr-code-img"
-                             onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFIED-RULI-LESMANA-XDKV1'">
+                             class="qr-code-img">
                     </div>
 
                     <div class="mt-1">
@@ -198,7 +197,6 @@
                 header: true,
                 complete: function(results) {
                     const data = results.data.filter(row => row['NAMA SISWA']);
-                    
                     const listSiswa = data.map(row => {
                         const mapels = ['Pendidikan Agama Islam dan Budi Pekerti', 'Pendidikan Pancasila', 'Bahasa Indonesia', 'Sejarah', 'Pendidikan Jasmani, Olahraga, dan Kesehatan', 'Bimbingan dan Konseling/Konselor (BP/BK)', 'Seni Rupa', 'Bahasa Inggris', 'Matematika (Umum)', 'Projek IPAS', 'Informatika', 'Dasar Dasar Desain Komunikasi Visual', 'Koding dan Kecerdasan Artifisial', 'Muatan Lokal Bahasa Daerah'];
                         let total = 0, count = 0;
@@ -213,7 +211,7 @@
                     const idx = listSiswa.findIndex(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
 
                     if (idx !== -1) displayCertificate(listSiswa[idx], idx + 1);
-                    else alert('Nama ' + inputName + ' tidak ditemukan dalam data X DKV 1!');
+                    else alert('Nama ' + inputName + ' tidak ditemukan!');
                 }
             });
         }
@@ -254,16 +252,31 @@
             renderTable('groupA', gA);
             renderTable('groupB', gB);
 
-            document.getElementById('val-S').innerText = d['Sakit'] || 0;
-            document.getElementById('val-I').innerText = d['Izin'] || 0;
-            document.getElementById('val-A').innerText = d['Alpa'] || 0;
+            const s = parseInt(d['Sakit']) || 0;
+            const i = parseInt(d['Izin']) || 0;
+            const a = parseInt(d['Alpa']) || 0;
 
-            let catatan = `Ananda ${d['NAMA SISWA']} menunjukkan semangat belajar yang baik di kelas X DKV 1. `;
-            if(parseInt(d['Alpa']) > 0) catatan += `Mohon tingkatkan lagi kedisiplinan kehadiran. `;
-            catatan += `Pertahankan prestasimu!`;
+            document.getElementById('val-S').innerText = s;
+            document.getElementById('val-I').innerText = i;
+            document.getElementById('val-A').innerText = a;
+
+            // Logika Pesan Kehadiran
+            let pesanHadir = "";
+            if (a === 0 && s === 0 && i === 0) pesanHadir = "Kehadiran Sempurna! Pertahankan.";
+            else if (a > 2) pesanHadir = "Perlu Perbaikan Kedisiplinan.";
+            else pesanHadir = "Tingkatkan Kerajinan Belajar.";
+            document.getElementById('pesanKehadiran').innerText = pesanHadir;
+
+            // Logika Catatan Wali Kelas yang Dinamis
+            let catatan = `Ananda ${d['NAMA SISWA']} menunjukkan minat yang baik pada bidang Desain Komunikasi Visual. `;
+            if (rank <= 5) catatan += `Prestasi luar biasa, pertahankan posisi peringkatmu! `;
+            else if (d.avg >= 80) catatan += `Hasil belajar sudah sangat baik, teruslah berkarya. `;
+            else catatan += `Tingkatkan frekuensi belajar di semester depan. `;
             
+            if (a > 0) catatan += `Perhatikan kehadiranmu agar tidak menghambat proses belajar. `;
+            catatan += `Tetap semangat!`;
+
             document.getElementById('displayCatatan').innerText = `"${catatan}"`;
-            
             window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
         }
 

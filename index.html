@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Sertifikat Nilai Siswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            .cert-card { border: none; shadow: none; }
+        }
+        .cert-bg {
+            background-color: #fff;
+            border: 10px double #1e3a8a;
+            padding: 40px;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
+
+    <div class="no-print w-full max-w-md bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-bold mb-4 text-center">Cek Sertifikat Nilai</h2>
+        <p class="text-sm text-gray-600 mb-4 text-center">Masukkan Nama Lengkap sesuai data sekolah</p>
+        <input type="text" id="studentName" placeholder="Contoh: AHMAD..." class="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button onclick="searchCertificate()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Cari Sertifikat</button>
+    </div>
+
+    <div id="certificateArea" class="hidden w-full max-w-4xl">
+        <div class="cert-bg bg-white shadow-2xl rounded-lg overflow-hidden" id="printContent">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-serif font-bold text-blue-900 uppercase">Sertifikat Hasil Belajar</h1>
+                <p class="text-xl italic">Tahun Pelajaran 2023/2024</p>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-lg">Diberikan kepada:</p>
+                <h2 id="displayNama" class="text-3xl font-bold border-b-2 border-gray-800 inline-block min-w-[300px] mb-2"></h2>
+                <p class="text-md">NISN: <span id="displayNISN" class="font-mono"></span></p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-sm mb-8">
+                <table class="w-full border-collapse border border-gray-400">
+                    <tr class="bg-gray-100"><th class="border border-gray-400 p-2 text-left">Mata Pelajaran</th><th class="border border-gray-400 p-2 text-center">Nilai</th></tr>
+                    <tr><td class="border border-gray-400 p-1 px-2">Informatika</td><td id="val-Informatika" class="border border-gray-400 text-center font-bold"></td></tr>
+                    <tr><td class="border border-gray-400 p-1 px-2">Dasar DKV</td><td id="val-DKV" class="border border-gray-400 text-center font-bold"></td></tr>
+                    <tr><td class="border border-gray-400 p-1 px-2">Matematika</td><td id="val-MTK" class="border border-gray-400 text-center font-bold"></td></tr>
+                    <tr><td class="border border-gray-400 p-1 px-2">Bahasa Inggris</td><td id="val-BING" class="border border-gray-400 text-center font-bold"></td></tr>
+                </table>
+                <table class="w-full border-collapse border border-gray-400">
+                    <tr class="bg-gray-100"><th class="border border-gray-400 p-2 text-left">Aspek Kehadiran</th><th class="border border-gray-400 p-2 text-center">Jumlah</th></tr>
+                    <tr><td class="border border-gray-400 p-1 px-2">Sakit</td><td id="val-S" class="border border-gray-400 text-center"></td></tr>
+                    <tr><td class="border border-gray-400 p-1 px-2">Izin</td><td id="val-I" class="border border-gray-400 text-center"></td></tr>
+                    <tr><td class="border border-gray-400 p-1 px-2">Alpa</td><td id="val-A" class="border border-gray-400 text-center"></td></tr>
+                </table>
+            </div>
+
+            <div class="flex justify-between mt-10">
+                <div class="text-center">
+                    <p>Mengetahui,</p>
+                    <p class="mt-16 font-bold">Wali Kelas</p>
+                </div>
+                <div class="text-center">
+                    <p>Jakarta, 18 Desember 2025</p>
+                    <p class="mt-16 font-bold font-serif underline">Kepala Sekolah</p>
+                </div>
+            </div>
+        </div>
+        <button onclick="window.print()" class="no-print mt-6 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 mx-auto block">Simpan sebagai PDF / Print</button>
+    </div>
+
+    <script>
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
+
+        function searchCertificate() {
+            const inputName = document.getElementById('studentName').value.trim().toUpperCase();
+            if (!inputName) return alert('Masukkan nama terlebih dahulu!');
+
+            // Ambil data dari Google Sheets
+            Papa.parse(sheetUrl, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    const data = results.data;
+                    // Cari baris yang mengandung nama tersebut
+                    const student = data.find(row => row['NAMA SISWA'] && row['NAMA SISWA'].toUpperCase().includes(inputName));
+
+                    if (student) {
+                        displayData(student);
+                    } else {
+                        alert('Nama tidak ditemukan. Pastikan ejaan benar.');
+                        document.getElementById('certificateArea').classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        function displayData(data) {
+            document.getElementById('certificateArea').classList.remove('hidden');
+            document.getElementById('displayNama').innerText = data['NAMA SISWA'];
+            document.getElementById('displayNISN').innerText = data['NISN'];
+            
+            // Map nilai (sesuaikan nama kolom dengan header di Google Sheet Anda)
+            document.getElementById('val-Informatika').innerText = data['Informatika'];
+            document.getElementById('val-DKV').innerText = data['Dasar-Dasar DKV'];
+            document.getElementById('val-MTK').innerText = data['Matematika'];
+            document.getElementById('val-BING').innerText = data['Bahasa Inggris'];
+            
+            // Kehadiran
+            document.getElementById('val-S').innerText = data['S'] || '0';
+            document.getElementById('val-I').innerText = data['I'] || '0';
+            document.getElementById('val-A').innerText = data['A'] || '0';
+
+            // Scroll otomatis ke sertifikat
+            window.scrollTo({ top: document.getElementById('certificateArea').offsetTop, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

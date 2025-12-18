@@ -126,7 +126,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
 
     async function processData() {
@@ -137,13 +137,14 @@
             download: true,
             header: true,
             complete: function(results) {
-                // 1. Bersihkan data & Hitung rata-rata tiap siswa
-                // Kita simpan 'originalIndex' untuk meniru logika COUNTIF(X8:$X$29)
+                // 1. Ambil data dan simpan index asli (untuk simulasi COUNTIF baris Excel)
                 const dataRaw = results.data.filter(row => row['NAMA SISWA']);
+                
                 const listSiswa = dataRaw.map((row, index) => {
                     let total = 0, count = 0;
                     Object.keys(row).forEach(key => {
-                        if (!['NAMA SISWA', 'NISN', 'NIS', 'Sakit', 'Izin', 'Alpa', 'Alfa', 'S', 'I', 'A', 'KETERANGAN'].includes(key)) {
+                        // Abaikan kolom non-nilai
+                        if (!['NAMA SISWA', 'NISN', 'NIS', 'Sakit', 'Izin', 'Alpa', 'Alfa', 'S', 'I', 'A', 'KETERANGAN', 'RANGKING'].includes(key)) {
                             let val = parseFloat(row[key]);
                             if(!isNaN(val)) { total += val; count++; }
                         }
@@ -151,28 +152,31 @@
                     return { 
                         ...row, 
                         avg: count > 0 ? total/count : 0,
-                        originalIndex: index // Menyimpan posisi asli di Excel
+                        originalIndex: index // Ini mewakili posisi baris di Excel
                     };
                 });
 
-                // 2. Proses Perangkingan sesuai rumus Excel Anda:
-                // (=RANK.EQ + COUNTIF(X8:$X$29) - 1)
-                // Logika: Urutkan berdasarkan rata-rata (Besar ke Kecil), 
-                // Jika rata-rata sama, yang index-nya lebih besar (paling bawah) didahulukan.
+                // 2. Perumusan Rangking (Logika: RANK.EQ + COUNTIF - 1)
+                // Kita urutkan berdasarkan rata-rata (Besar ke Kecil)
+                // Jika nilai sama, yang originalIndex-nya lebih besar (paling bawah) jadi pemenang
                 listSiswa.sort((a, b) => {
                     if (b.avg !== a.avg) {
-                        return b.avg - a.avg; // Urutan nilai tertinggi
+                        return b.avg - a.avg; 
                     }
-                    return b.originalIndex - a.originalIndex; // Tie-breaker: posisi bawah di Excel jadi rank lebih tinggi
+                    return b.originalIndex - a.originalIndex; 
                 });
 
-                // 3. Cari posisi siswa yang diinput
-                const idx = listSiswa.findIndex(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
+                // 3. Cari data siswa berdasarkan input nama
+                // Menggunakan findIndex untuk mendapatkan posisi rank (index + 1)
+                const rankIdx = listSiswa.findIndex(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
 
-                if (idx !== -1) {
-                    displayCertificate(listSiswa[idx], idx + 1);
+                if (rankIdx !== -1) {
+                    // Jika kolom "RANGKING" sudah ada di Excel, bisa langsung diambil:
+                    // let manualRank = listSiswa[rankIdx]['RANGKING'];
+                    // Namun kita gunakan hasil kalkulasi rumus tadi:
+                    displayCertificate(listSiswa[rankIdx], rankIdx + 1);
                 } else {
-                    alert('Nama tidak ditemukan!');
+                    alert('Nama tidak ditemukan! Pastikan ejaan benar sesuai data.');
                 }
             }
         });
@@ -184,6 +188,7 @@
         document.getElementById('displayNISN').innerText = d['NISN'] || '-';
         document.getElementById('displayNIS').innerText = d['NIS'] || '-';
         
+        // Data Kehadiran
         const sVal = d['Sakit'] || d['S'] || 0;
         const iVal = d['Izin'] || d['I'] || 0;
         const aVal = d['Alpa'] || d['Alfa'] || d['A'] || 0;
@@ -192,20 +197,12 @@
         document.getElementById('val-I').innerText = iVal;
         document.getElementById('val-A').innerText = aVal;
 
-        let pesanAkademik = `Ananda ${d['NAMA SISWA']} menunjukkan minat yang sangat baik. Teruslah berlatih terutama pada kompetensi desain. `;
-        let pesanHadir = "";
-        const totalAbsen = parseInt(sVal) + parseInt(iVal) + parseInt(aVal);
-        
-        if (parseInt(aVal) > 5) {
-            pesanHadir = "Namun, mohon tingkatkan kedisiplinan kehadiran di semester depan karena jumlah ketidakhadiran tanpa keterangan (Alpa) yang cukup tinggi.";
-        } else if (totalAbsen > 3) {
-            pesanHadir = "Mohon kurangi ketidakhadiran di semester depan agar proses belajar lebih optimal dan tidak tertinggal materi.";
-        } else {
-            pesanHadir = "Pertahankan tingkat kehadiran yang baik ini untuk menunjang prestasi yang lebih tinggi.";
-        }
+        // Catatan Otomatis
+        let pesanAkademik = `Ananda ${d['NAMA SISWA']} menunjukkan minat belajar yang baik. `;
+        let pesanHadir = parseInt(aVal) > 3 ? "Mohon tingkatkan kedisiplinan kehadiran." : "Pertahankan prestasi dan kehadiran Anda.";
+        document.getElementById('displayCatatan').innerText = `"${pesanAkademik}${pesanHadir} Terus berkarya!"`;
 
-        document.getElementById('displayCatatan').innerText = `"${pesanAkademik}${pesanHadir} Tetap semangat!"`;
-
+        // Daftar Mata Pelajaran (Sesuaikan dengan header kolom Excel Anda)
         const gA = [
             ['Pend. Agama & BP', d['Pendidikan Agama Islam dan Budi Pekerti']],
             ['Pendidikan Pancasila', d['Pendidikan Pancasila']],
@@ -227,6 +224,7 @@
         renderTable('groupA', gA);
         renderTable('groupB', gB);
 
+        // Menampilkan Badge Rangking (Sesuai list 1-10 di gambar Anda)
         const badge = document.getElementById('rankBadge');
         if(rank <= 10) {
             badge.classList.remove('hidden');
@@ -235,7 +233,7 @@
             badge.classList.add('hidden'); 
         }
 
-        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}-XDKV1`;
+        document.getElementById('qrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=VERIFIED-${d['NAMA SISWA']}-RANK-${rank}`;
         
         window.scrollTo({ top: document.getElementById('certificateArea').offsetTop - 20, behavior: 'smooth' });
     }

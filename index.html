@@ -129,7 +129,7 @@
 <script>
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/1oMWmhbreOU3DiisoqXzSTywA6md0dPppbknxgNrqBC8/gviz/tq?tqx=out:csv';
 
-    // Perintah: Daftar Nama dan Rangking Eksklusif
+    // Daftar Ranking
     const daftarRankingEksklusif = {
         "RISA FADILA": 1,
         "AYYISY MAULIDA ISNAENI": 2,
@@ -143,6 +143,32 @@
         "M PARHAN MAULANA": 10
     };
 
+    // Daftar Catatan Wali Kelas
+    const daftarCatatanWali = {
+        "AI FITRI NURAENI": "Pencapaian yang bagus masuk dalam 5 besar (Peringkat 5). Tetap fokus belajar untuk meningkatkan prestasi di semester berikutnya.",
+        "ANWAR MUTAQIN": "Semangat belajar perlu ditingkatkan lagi (Peringkat 16). Kurangi absensi agar tidak tertinggal materi pelajaran yang penting.",
+        "AYYISY MAULIDA ISNAENI": "Prestasi yang membanggakan sebagai peringkat 2. Meskipun sempat terkendala kesehatan (5 hari sakit), kamu tetap mampu meraih hasil maksimal.",
+        "DEDE NURUL ALAMSAH": "Hasil belajar cukup baik (Peringkat 15). Fokuslah pada peningkatan kompetensi kejuruan di semester mendatang.",
+        "FAHMI KURNIANSYAH": "Pertahankan nilai yang sudah baik (Peringkat 14) dan usahakan untuk lebih teliti dalam pengerjaan tugas-tugas sekolah.",
+        "FAIZ KURNIAWAN": "Nilai akademis sudah memenuhi standar (Peringkat 13). Terus asah kemampuan praktik di bidang DKV agar semakin mahir.",
+        "FITRAH RIZKI RAMADON": "Nilai akademis cukup baik (Peringkat 18), namun angka ketidakhadiran tanpa keterangan (8 hari Alpa) sangat disayangkan. Perbaiki kehadiranmu.",
+        "ILFAH SADIATUL UMAH": "Hasil belajar yang sangat baik sebagai Peringkat 3. Pertahankan prestasimu dan teruslah aktif dalam kegiatan sekolah.",
+        "KARIN NURA'ENI": "Selamat atas peringkat 4 yang diraih. Kedisiplinanmu dalam belajar dan kehadiran sangat baik, pertahankan di semester depan.",
+        "LUTVI ABDUL JABAR": "Nilai pengetahuan cukup bagus (Peringkat 17), namun perlu ditingkatkan kedisiplinan dalam kehadiran sekolah.",
+        "M H RISKI": "Capaian yang cukup stabil (Peringkat 12). Jangan ragu untuk lebih aktif berdiskusi di kelas guna memperdalam pemahaman materi.",
+        "M PARHAN MAULANA": "Kamu memiliki potensi besar sebagai Peringkat 10. Tingkatkan kedisiplinan dalam kehadiran agar hasil belajar lebih maksimal lagi.",
+        "PAKHRI KIRMAN": "Prestasi yang cukup baik di peringkat 8, namun tolong kurangi ketidakhadiran agar tidak mengganggu proses belajarmu.",
+        "PURNAMA MAULIDAN": "Masih banyak ruang untuk peningkatan (Peringkat 21). Tingkatkan kehadiran (7 hari Alpa) dan keaktifan di dalam kelas.",
+        "RAMA RADILA PUTRA": "Hasil belajar sangat dipengaruhi oleh kehadiran (Peringkat 22). Dengan 10 hari Alpa, banyak materi tertinggal. Mohon perbaiki kedisiplinanmu.",
+        "RANGGA ANUARI LESMANA": "Tolong tingkatkan kedisiplinan (Peringkat 20). Ketidakhadiran tanpa keterangan sebanyak 10 hari sangat menghambat potensimu.",
+        "RAYNALDY RAFTANSYAH": "Kehadiran sangat penting dalam penilaian (Peringkat 19). Angka Alpa yang mencapai 10 hari sangat berpengaruh pada hasil belajar.",
+        "RIKZA DZILFIKRI": "Hasil belajar cukup baik (Peringkat 11). Tingkatkan lagi motivasi belajarmu untuk mencapai hasil optimal di semester depan.",
+        "RISA FADILA": "Selamat atas pencapaian luar biasa sebagai peringkat 1 di kelas. Pertahankan terus semangat belajarmu!",
+        "RIZKI ABDUL ROJAK": "Hasil yang memuaskan di peringkat 6. Tingkatkan lagi frekuensi belajarmu agar bisa menembus peringkat 5 besar.",
+        "SITI NAFISA": "Pertahankan semangat belajarmu. Meskipun sering terkendala kesehatan (5 hari sakit), hasil belajarmu tetap stabil di peringkat 7.",
+        "WENDI": "Selamat masuk dalam 10 besar sebagai Peringkat 9. Kurangi izin yang tidak terlalu mendesak agar materi pelajaran tidak tertinggal."
+    };
+
     async function processData() {
         const inputName = document.getElementById('studentName').value.trim().toUpperCase();
         if (!inputName) return alert('Masukkan Nama!');
@@ -151,12 +177,10 @@
             download: true,
             header: true,
             complete: function(results) {
-                // Mencari data siswa di Google Sheet
                 const data = results.data.filter(row => row['NAMA SISWA']);
                 const siswa = data.find(s => s['NAMA SISWA'].trim().toUpperCase() === inputName);
 
                 if (siswa) {
-                    // Perintah: Ambil rangking hanya jika ada di daftar 10 besar
                     const rank = daftarRankingEksklusif[inputName] || null;
                     displayCertificate(siswa, rank);
                 } else {
@@ -167,6 +191,7 @@
     }
 
     function displayCertificate(d, rank) {
+        const nameKey = d['NAMA SISWA'].trim().toUpperCase();
         document.getElementById('certificateArea').classList.remove('hidden');
         
         // Tampilkan Identitas
@@ -178,6 +203,9 @@
         document.getElementById('val-S').innerText = d['Sakit'] || 0;
         document.getElementById('val-I').innerText = d['Izin'] || 0;
         document.getElementById('val-A').innerText = d['Alpa'] || 0;
+
+        // Tampilkan Catatan Wali Kelas sesuai Nama
+        document.getElementById('displayCatatan').innerText = daftarCatatanWali[nameKey] || "Tetap semangat belajar dan tingkatkan prestasimu!";
 
         // Tampilkan Tabel Nilai
         const gA = [
@@ -204,11 +232,9 @@
         // --- LOGIKA RANGKING ---
         const badge = document.getElementById('rankBadge');
         if (rank) {
-            // Jika masuk dalam 10 nama di atas, tampilkan rangking
             badge.classList.remove('hidden');
             document.getElementById('displayRank').innerText = `#${rank}`;
         } else {
-            // Jika tidak ada di daftar 10 orang tersebut, sembunyikan rangking
             badge.classList.add('hidden');
         }
 
